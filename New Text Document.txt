@@ -1,0 +1,1 @@
+SELECT * FROM `building` WHERE BuildingID IN (SELECT DISTINCT BuildingID FROM ROOM  WHERE RoomType=1)
