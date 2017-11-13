@@ -17,27 +17,38 @@ try {
     $stmt->bindParam(':cause', $_POST['cause']);
 
     $stmt->execute();
+
+    $returnFormID = $db->lastInsertId();
+
+// Add form for flat checker
+
+    $sql = "INSERT INTO `return_form_checker` (`return_form_id`) 
+    VALUES (:formid);";
+
+    $stmt = $db->prepare($sql);
+    $stmt->bindParam(':formid', $returnFormID);
+
+    $stmt->execute();
+
+// Add form for flat manager
+
+    $sql = "INSERT INTO `return_form_manager` (`return_form_id`) 
+    VALUES (:formid);";
+
+    $stmt = $db->prepare($sql);
+    $stmt->bindParam(':formid', $returnFormID);
+
+    $stmt->execute();
+
 } catch (Exception $e) {
     echo "Error: {$e->getMessage()}";
     $db->rollback();
     die();
 }
 
-// try {
-//     $sql = "UPDATE `resident` SET `EndDate` = :enddate WHERE `ResidentID` = :residentid;";
-//     $stmt = $db->prepare($sql);
-
-//     $stmt->bindParam(':enddate', $returnDate);
-//     $stmt->bindParam(':residentid', $_POST['residentid']);
-
-//     $stmt->execute();
-// } catch (Exception $e) {
-//     echo "Error: {$e->getMessage()}";
-//     $db->rollback();
-//     die();
-// }
-
 $db->commit();
+
+// dd($db->errorInfo());
 
 header('Location: index_member.php');
 exit();
