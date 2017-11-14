@@ -8,12 +8,17 @@ if (!isset($_SESSION["user_id"])){
   die();
 }
 
-if ($_SESSION['user_type'] != 9) {
+if ($_SESSION['user_type'] != 4) {
   header('Location: login.php');
   die();
 }
-
 try {
+  $sql = "SELECT * FROM member WHERE UserID = :userid";
+  $stmt = $db->prepare($sql);
+  $stmt->bindParam(':userid', $_SESSION['user_id']);
+  $stmt->execute();
+  $userInfo = $stmt->fetch(PDO::FETCH_ASSOC);
+
   $sql = "
   SELECT `return_form`.`ReturnID`,`v_resident`.`Name`, `v_resident`.`Building`,`v_resident`.`BuildingID`,
   `v_resident`.`RoomID`,`return_form`.`ReturnDate`,`return_form`.`Cause`,`return_form`.`Status`, 
@@ -23,10 +28,8 @@ try {
   INNER JOIN `return_form_checker` ON `return_form`.`ReturnID` = `return_form_checker`.`return_form_id` 
   INNER JOIN `return_form_manager` ON `return_form`.`ReturnID` = `return_form_manager`.`return_form_id`
 ";
+  $sql .= " WHERE BuildingID = {$userInfo['BuildingID']}";
 
-  if (isset($_GET['building']) && $_GET['building'] != 'all') {
-    $sql .= " WHERE BuildingID = {$_GET['building']}";
-  }
   $stmt = $db->prepare($sql);
   $stmt->execute();
   $repairforms = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -69,6 +72,7 @@ try {
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Josefin+Slab:100,300,400,600,700,100italic,300italic,400italic,600italic,700italic" rel="stylesheet" type="text/css">
+    <script src="js/jquery.js"></script>
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -87,7 +91,37 @@ try {
     <h3>หอพักบุคลากรมหาวิทยาลัยอุบลราชธานี</h3></div>
 
     <!-- Navigation -->
-    <?php require 'admin_nav.php'; ?>
+    <nav class="navbar navbar-default" role="navigation">
+      <div class="container">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <!-- navbar-brand is hidden on larger screens, but visible when the menu is collapsed -->
+          <a class="navbar-brand" href="index.html">Business Casual</a>
+        </div>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <ul class="nav navbar-nav">
+            <li>
+              <a href="form_handle_flatchecker.php">จัดการแบบฟอร์ม</a>
+            </li>
+            <li>
+              <a href="form_switch.php">ความเคลื่อนไหวในหอพัก</a>
+            </li>
+            <li>
+              <a href="logout.php">ออกจากระบบ</a>
+            </li>
+          </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+      </div>
+      <!-- /.container -->
+    </nav>
 
     <div class="container">
       <div class="box">
@@ -100,26 +134,7 @@ try {
             <div class="row">
               <div class="col-md-12">
                 <label style="display: block">เลือกประเภทฟอร์ม</label>
-                <a href="form_handle.php" class="btn btn-primary">ฟอร์มร้องขอ</a>
-                <a href="form_repair_handle.php" class="btn btn-primary">ฟอร์มแจ้งซ่อม</a>
-                <a href="form_return_handle_admin.php" class="btn btn-primary">ฟอร์มขอคืนห้อง</a>
-                <a href="form_switch_handle_admin.php" class="btn btn-primary">ฟอร์มขอสลับห้อง</a>
-              </div>
-            </div>
-
-            <div class="row" style="margin-top: 16px;">
-              <div class="col-md-4">
-                <label>ชื่ออาคาร</label>
-                <form action="form_return_handle_admin.php" method="get" id="buildingform">
-                  <select class="form-control" name="building" onchange="document.getElementById('buildingform').submit()">
-                    <option value="all"<?= ! isset($_GET['building']) ? ' selected' : '' ?>>แฟลตทั้งหมด</option>
-                    <?php foreach ($buildings as $building): ?>
-                      <option value="<?= $building['BuildingID'] ?>"<?= isset($_GET['building']) &&  $_GET['building'] == $building['BuildingID'] ? ' selected' : '' ?>>
-                        <?= $building['BuildingName'] ?>
-                      </option>
-                    <?php endforeach ?>
-                  </select>
-                </form>
+                <a href="form_handle_flatchecker.php" class="btn btn-primary">ฟอร์มขอคืนห้อง</a>
               </div>
             </div>
 
@@ -133,7 +148,6 @@ try {
                     <th>วันที่ขอคืนห้อง</th>
                     <th>สาเหตุ</th>
                     <th>สถานะ</th>
-                    <th>Options</th>
                   </thead>
                   <tbody>
                     <?php foreach ($repairforms as $form): ?>
@@ -166,17 +180,9 @@ try {
                           <span class="text-danger">ประธานอนุกรรมการยังไม่อนุมัติ</span>
                         <?php endif ?>
                         <br>
-                        <?php if ($form['Status'] != 3): ?>
-                          <a href="#" onclick="showModal(event, <?= $form['ReturnID'] ?>)">เปลี่ยนสถานะ</a>
+                        <?php if (! !!$form['checker_submitted']): ?>
+                          <a href="#" onclick="showModal(event, <?= $form['ReturnID'] ?>)">กรอกแบบฟอร์ม</a>
                         <?php endif ?>
-                      </td>
-                      <td>
-                        <form action="return_form_delete.php" method="POST">
-                          <input type="hidden" name="id" value="<?= $form['ReturnID'] ?>">
-                          <button type="submit" name="delete" class="btn btn-danger">
-                            ลบ
-                          </button>
-                        </form>
                       </td>
                     </tr>
                     <?php endforeach ?>
@@ -195,7 +201,7 @@ try {
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title">แก้ไขสถานะ</h4>
+            <h4 class="modal-title">กรอกฟอร์มความเห็น</h4>
           </div>
           <div class="modal-body">
             <div>
@@ -222,7 +228,6 @@ try {
     </footer>
 
     <!-- jQuery -->
-    <script src="js/jquery.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
@@ -238,7 +243,7 @@ try {
     function showModal(event, id) {
       event.preventDefault();
 
-      var url = "get_return_status_form.php?id=" + id;
+      var url = "get_return_checker_form.php?id=" + id;
 
       $.get(url, function(response) {
         $('.repairmodal-content').html('');

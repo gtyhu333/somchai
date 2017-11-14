@@ -29,6 +29,10 @@ try {
           header('Location: index_committee.php');
           exit();
           break;
+        case 4:
+          header('Location: index_flatchecker.php');
+          exit();
+          break;
         case 6:
           $_SESSION["Error"] = 'User นี้ไม่สามารถ Login ได้';
           unset($_SESSION["user_id"]);
