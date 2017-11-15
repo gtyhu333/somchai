@@ -32,6 +32,9 @@ try {
         case 4:
           header('Location: index_flatchecker.php');
           exit();
+        case 5:
+          header('Location: index_flatmanager.php');
+          exit();
           break;
         case 6:
           $_SESSION["Error"] = 'User นี้ไม่สามารถ Login ได้';

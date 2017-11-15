@@ -204,10 +204,27 @@ try {
             <h4 class="modal-title">กรอกฟอร์มความเห็น</h4>
           </div>
           <div class="modal-body">
-            <div>
-              <form action="form_return_change_status.php" method="post" class="repairmodal-content">
+            <div class="repairmodal-content">
+      
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">ปิด</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div>
 
-              </form>
+    <div class="modal fade" tabindex="-1" role="dialog" id="flatcheckermodal">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">ความเห็นของอนุกรรมการประจำอาคาร</h4>
+          </div>
+          <div class="modal-body">
+            <div class="flatcheckermodal-content">
+
             </div>
           </div>
           <div class="modal-footer">
@@ -250,6 +267,32 @@ try {
         $('.repairmodal-content').html(response);
 
         $('#repairpicmodal').modal('show');
+      });
+    }
+
+    function showCheckerForm(event, id) {
+      event.preventDefault();
+
+      var url = "get_return_checker_form_view.php?id=" + id;
+
+      $.get(url, function(response) {
+        $('.flatcheckermodal-content').html('');
+        $('.flatcheckermodal-content').html(response);
+
+        $('#flatcheckermodal').modal('show');
+      });
+    }
+
+    function showManagerForm(event, id) {
+      event.preventDefault();
+
+      var url = "get_return_manager_form_view.php?id=" + id;
+
+      $.get(url, function(response) {
+        $('.flatcheckermodal-content').html('');
+        $('.flatcheckermodal-content').html(response);
+
+        $('#flatcheckermodal').modal('show');
       });
     }
     </script>
