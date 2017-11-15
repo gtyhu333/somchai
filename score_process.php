@@ -30,10 +30,12 @@ function process($request)
     $interval = date_diff(new DateTime($request['EmployDate']), new DateTime("now"));
 
     if ($interval->m > 6) {
-        $score += $employScore = $interval->y + 1;
-    } elseif ($interval->m < 6) {
-        $score += $employScore = ($interval->m / 12) + $interval->y;
+        $employScore = $interval->y + 1;
+    } elseif ($interval->m <= 6) {
+        $employScore = ($interval->m / 12) + $interval->y;
     }
+
+    $score += $employScore;
 
     return [
         'StaffID' => $request['StaffID'], 
