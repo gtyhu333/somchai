@@ -118,9 +118,12 @@ catch(PDOException $e) {
                                                           <td><center><?= $request['request_status'] ?></center></td>
                                                           <td><center><?= getRoomTypeName($request['RoomtypeID'], $db) ?></center></td>
                                                           <?php $score = getScore($request['StaffID'], $db) ?>
-                                                          <td><center><?= $score['Score'] ?>
-                                                            <a href="#" data-toggle="modal" data-target="#modalScore<?= $request['StaffID'] ?>">
+                                                          <td><center><?= $score['Score'] ? $score['Score'] : '-' ?>
+                                                            <?php if ($score['Score']): ?>
+                                                              <br><a href="#" onclick="showScoreModal(event, <?= $request['StaffID'] ?>)">
                                                               ดูรายละเอียด</a>
+                                                            <?php endif ?>
+                                                            
                                                             </center>
                                                           </td>
                                                           <td><center>
@@ -142,26 +145,6 @@ catch(PDOException $e) {
                                                         </tr>
 
                                                         <!-- Modal -->
-                                                        <div id="modalScore<?= $request['StaffID'] ?>" class="modal fade" role="dialog">
-                                                          <div class="modal-dialog">
-
-                                                            <!-- Modal content-->
-                                                            <div class="modal-content">
-                                                              <div class="modal-header">
-                                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                                <h4 class="modal-title">รายละเอียดคะแนน</h4>
-                                                              </div>
-                                                              <div class="modal-body">
-                                                                <p>คะแนนตำแหน่งบุคลากร: <?= $score['PositionScore'] ?></p>
-                                                                <p>คะแนนภูมิลำเนา: <?= $score['CityScore'] ?></p>
-                                                                <p>คะแนนประสบภัย: <?= $score['DisasterScore'] ?></p>
-                                                                <p>คะแนนสถานภาพ: <?= $score['MaritalScore'] ?></p>
-                                                                <p>คะแนนระยะเวลาปฏิบัติงาน: <?= $score['EmployScore'] ?></p>
-                                                              </div>
-                                                            </div>
-
-                                                          </div>
-                                                        </div>
 
                                                         <!-- Modal -->
                                                         <div id="modal<?= $request['StaffID'] ?>" class="modal fade" role="dialog">
@@ -265,6 +248,25 @@ catch(PDOException $e) {
       <input type="hidden" name="building" value="">
     </form>
 
+    <div class="modal fade" tabindex="-1" role="dialog" id="scoremodal">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">รายละเอียดคะแนน</h4>
+          </div>
+          <div class="modal-body">
+            <div id="scoremodal-content">
+              
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">ปิด</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div>
+
     <!-- jQuery -->
     <script src="js/jquery.js"></script>
 
@@ -283,6 +285,19 @@ catch(PDOException $e) {
     function changevalue(value) {
       $('input[name=building]').val($('#selectid').val());
       $('#redirectform').submit();
+    }
+
+    function showScoreModal(event, id) {
+      event.preventDefault();
+      
+      var url = "get_score_view.php?id=" + id;
+
+      $.get(url, function(res) {
+        $('#scoremodal-content').html('');
+        $('#scoremodal-content').html(res);
+
+        $('#scoremodal').modal('show');
+      });
     }
     </script>
 

@@ -62,16 +62,14 @@ $selectorPrevious = $selector != 1 ? $selector - 1 : 3;
 
 $sql = "SELECT * FROM `staff` 
 WHERE `staff`.`RequestDate` BETWEEN '{$range[$selector][0]}' AND '{$range[$selector][1]}' 
-AND `staff`.`request_status` = 'ปกติ' 
-AND NOT EXISTS 
-(SELECT * FROM `score` WHERE `score`.`StaffID` = `staff`.`StaffID`);";
+AND `staff`.`request_status` = 'ปกติ' ;";
 
 $stmt = $db->prepare($sql);
 $stmt->execute();
 $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 if (empty($result)) {
-    goto updateCycle;
+    goto previousCycle;
 }
 
 $insertSQL = "
@@ -103,32 +101,7 @@ foreach ($scores = array_map("process", $result) as $index => $score) {
 $stmt = $db->prepare($insertSQL);
 $stmt->execute();
 
-// Update the current cycle
-updateCycle:
-
-$sql = "SELECT * FROM `staff` 
-WHERE `staff`.`RequestDate` BETWEEN '{$range[$selector][0]}' AND '{$range[$selector][1]}' 
-AND `staff`.`request_status` = 'ปกติ';";
-
-$stmt = $db->prepare($sql);
-$stmt->execute();
-$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-foreach ($scores = array_map("process", $result) as $index => $score) {
-    $updateSQL = "
-    UPDATE `score` SET 
-    `Score` = {$score['Score']}, 
-    `PositionScore` = {$score['Scores']['postionScore']}, 
-    `CityScore` = {$score['Scores']['cityScore']}, 
-    `DisasterScore` = {$score['Scores']['disasterScore']}, 
-    `MaritalScore` = {$score['Scores']['maritalScore']}, 
-    `EmployScore` = {$score['Scores']['employScore']}, 
-    `EvaluateDate` = now() 
-    WHERE `StaffID` = {$score['StaffID']};";
-    // dd($updateSQL);
-    $stmt = $db->prepare($updateSQL);
-    $stmt->execute();
-}
+previousCycle:
 
 // Previous Cycle
 $sql = "SELECT * FROM `staff` 
@@ -139,20 +112,41 @@ $stmt = $db->prepare($sql);
 $stmt->execute();
 $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-foreach ($scores = array_map("process", $result) as $index => $score) {
-    $updateSQL = "
-    UPDATE `score` SET 
-    `Score` = {$score['Score']}, 
-    `PositionScore` = {$score['Scores']['postionScore']}, 
-    `CityScore` = {$score['Scores']['cityScore']}, 
-    `DisasterScore` = {$score['Scores']['disasterScore']}, 
-    `MaritalScore` = {$score['Scores']['maritalScore']}, 
-    `EmployScore` = {$score['Scores']['employScore']}, 
-    `EvaluateDate` = now() 
-    WHERE `StaffID` = {$score['StaffID']};";
-    $stmt = $db->prepare($updateSQL);
-    $stmt->execute();
+if (empty($result)) {
+    goto redirect;
 }
+
+$insertSQL = "
+    INSERT INTO `score` (`StaffID`, `PositionScore`, 
+    `CityScore`, `DisasterScore`, `MaritalScore`, `EmployScore`,`Score`) VALUES ";
+
+foreach ($scores = array_map("process", $result) as $index => $score) {
+    if ($score !== end($scores)) {
+        $insertSQL .= 
+        "({$score['StaffID']}, 
+        {$score['Scores']['postionScore']}, 
+        {$score['Scores']['cityScore']}, 
+        {$score['Scores']['disasterScore']}, 
+        {$score['Scores']['maritalScore']}, 
+        {$score['Scores']['employScore']}, 
+        {$score['Score']}), ";
+    } else {
+        $insertSQL .= 
+        "({$score['StaffID']}, 
+        {$score['Scores']['postionScore']}, 
+        {$score['Scores']['cityScore']}, 
+        {$score['Scores']['disasterScore']}, 
+        {$score['Scores']['maritalScore']}, 
+        {$score['Scores']['employScore']}, 
+        {$score['Score']});";
+    }
+}
+
+$stmt = $db->prepare($insertSQL);
+$stmt->execute();
+
+
+redirect:
 
 header("Location: form_process.php");
 exit();

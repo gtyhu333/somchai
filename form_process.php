@@ -91,10 +91,10 @@ catch(PDOException $e) {
                                                       <th><center>ตำแหน่ง</center></th>
                                                       <th><center>คณะ</center></th>
                                                       <th><center>วันที่บรรจุ</center></th>
-                                                      <th><center>อยู่ตามทะเบียนบ้าน</center></th>
+                                                      <th><center>ที่อยู่</center></th>
                                                       <th><center>วันที่ยื่นฟอร์ม</center></th>
-                                                      <th><center>คะแนน</center></th>
-                                                      <th><center>วันที่คำนวณ</center></th>
+                                                      <th><center>คะแนน (ล่าสุด)</center></th>
+                                                      <th><center>วันที่คำนวณ (ล่าสุด)</center></th>
                                                       <th><center>การจัดสรร</center></th>
                                                       <th><center>ยกเลิกฟอร์ม</center></th>
                                                     </thead>
@@ -108,8 +108,19 @@ catch(PDOException $e) {
                                                           <td><center><?= getFullAddress($request, $db) ?></center></td>
                                                           <td><center><?= sqlDateToThaiDate($request['RequestDate']) ?></center></td>
                                                           <?php $score = getScore($request['StaffID'], $db) ?>
-                                                          <td><center><?= $score['Score'] ?></center></td>
-                                                          <td><center><?= sqlDateToThaiDate($score['EvaluateDate']) ?></center></td>
+                                                          <td>
+                                                            <center>
+                                                              <?php if ($score): ?>
+                                                                <?= $score['Score'] ?> 
+                                                                <br><a href="#" onclick="showScoreModal(event, <?= $request['StaffID'] ?>)">ดูรายละเอียด</a>
+                                                              <?php endif ?>
+                                                            </center></td>
+                                                          <td>
+                                                            <?php if ($score): ?>
+                                                              <center><?= sqlDateToThaiDate($score['EvaluateDate']) ?> <br> 
+                                                            <?= date('H:i', strtotime($score['EvaluateDate'])) ?></center>
+                                                            <?php endif ?>
+                                                          </td>
                                                           <td><center><?= $request['request_status'] ?></center></td>
                                                           <td><center>
                                                             <form action="form_cancle.php" method="POST">
@@ -168,6 +179,25 @@ catch(PDOException $e) {
       <input type="hidden" name="building" value="">
     </form>
 
+    <div class="modal fade" tabindex="-1" role="dialog" id="scoremodal">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">รายละเอียดคะแนน</h4>
+          </div>
+          <div class="modal-body">
+            <div id="scoremodal-content">
+              
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">ปิด</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div>
+
     <!-- jQuery -->
     <script src="js/jquery.js"></script>
 
@@ -185,6 +215,19 @@ catch(PDOException $e) {
 
     function changevalue(value) {
       $('input[name=building]').val($('#selectid').val());
+    }
+
+    function showScoreModal(event, id) {
+      event.preventDefault();
+      
+      var url = "get_score_view.php?id=" + id;
+
+      $.get(url, function(res) {
+        $('#scoremodal-content').html('');
+        $('#scoremodal-content').html(res);
+
+        $('#scoremodal').modal('show');
+      });
     }
     </script>
 

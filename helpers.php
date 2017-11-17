@@ -41,7 +41,7 @@ function sqlDateToThaiDate($date)
 
 function getFullAddress($request, $db)
 {
-    return districtName($request['DistrictID'], $db) . ' อ.' .
+    return ' อ.' .
            cityName($request['CityID'], $db) . ($request['ProvinceID'] == '1' ? ' ' : ' จ.') .
            provinceName($request['ProvinceID'], $db);
 }
@@ -137,7 +137,7 @@ function getUserInfo($userID, $db)
 
 function getScore($staffID, $db)
 {
-    $stmt = $db->prepare("SELECT * FROM score WHERE StaffID = ? LIMIT 1;");
+    $stmt = $db->prepare("SELECT * FROM score WHERE StaffID = ? ORDER BY EvaluateDate DESC LIMIT 1;");
     $stmt->bindParam(1, $staffID, PDO::PARAM_INT);
     $stmt->execute();
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
