@@ -164,7 +164,7 @@ try {
 
                                                           <td><center>
                                                               <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#modal<?= $resident['UserID'] ?>">
-                                                                เพิ่ม
+                                                                เพิ่ม / แก้ไข
                                                               </a>
                                                           </center></td>
 
@@ -191,39 +191,60 @@ try {
                                                             <div class="modal-content">
                                                               <div class="modal-header">
                                                                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                                <h4 class="modal-title">เพิ่ม Username และ Password</h4>
+                                                                <h4 class="modal-title">เพิ่ม / แก้ไข Username และ Password</h4>
                                                               </div>
                                                               <div class="modal-body">
-                                                                <form action="update_user.php" method="post">
-                                                                  <div class="form-group">
-                                                                    <label for="username">Username</label>
-                                                                    <input type="text" class="form-control" name="username" placeholder="Username" required
-                                                                    value="<?= $resident['UserLogin'] ?: '' ?>">
+                                                                <ul class="nav nav-tabs">
+                                                                  <?php if ($resident['UserLogin']): ?>
+                                                                  <li class="<?= $resident['UserLogin'] ? 'active' : '' ?>">
+                                                                    <a href="#edit<?= $resident['UserID'] ?>" aria-controls="edit<?= $resident['UserID'] ?>" data-toggle="tab">แก้ไข</a>
+                                                                  </li>
+                                                                  <?php endif ?>
+
+                                                                  <li class="<?= !$resident['UserLogin'] ? 'active' : '' ?>">
+                                                                    <a href="#add<?= $resident['UserID'] ?>" aria-controls="add<?= $resident['UserID'] ?>" data-toggle="tab">เพิ่ม</a>
+                                                                  </li>
+                                                                </ul>
+
+                                                                <div class="tab-content">
+                                                                  <?php if ($resident['UserLogin'] ): ?>
+                                                                  <div class="tab-pane<?= $resident['UserLogin'] ? ' active' : '' ?>" id="edit<?= $resident['UserID'] ?>" style="padding: 20px">
+                                                                    <a href="edit_user.php?id=<?= $resident['UserID'] ?>">คลิกที่นี่เพื่อไปยังหน้าแก้ไข User</a>
                                                                   </div>
+                                                                  <?php endif ?>
 
-                                                                  <div class="form-group">
-                                                                    <label for="username">Password</label>
-                                                                    <input type="password" class="form-control" name="password" placeholder="Password">
-                                                                    <span class="help-block">หากไม่ต้องการแก้ไขให้ปล่อยว่างเอาไว้</span>
+                                                                  <div class="tab-pane<?= !$resident['UserLogin'] ? ' active' : '' ?>" id="add<?= $resident['UserID'] ?>">
+                                                                    <form action="add_new_user.php" method="post">
+                                                                      <div class="form-group">
+                                                                        <label for="username">Username</label>
+                                                                        <input type="text" class="form-control" name="username" placeholder="Username" required>
+                                                                      </div>
+
+                                                                      <div class="form-group">
+                                                                        <label for="username">Password</label>
+                                                                        <input type="password" class="form-control" name="password" placeholder="Password" required>
+                                                                      </div>
+
+                                                                      <div class="form-group">
+                                                                        <label for="usertype">ประเภทสมาชิก</label>
+                                                                        <select name="usertype" class="form-control" required>
+                                                                          <option value="">โปรดเลือก</option>
+                                                                          <?php foreach ($userTypes as $type): ?>
+                                                                            <option value="<?= $type['FieldCode'] ?>"<?= $usertype[0] == $type['FieldCode'] ? ' selected' : '' ?>>
+                                                                              <?= $type['ValueT'] ?>
+                                                                            </option>
+                                                                          <?php endforeach ?>
+                                                                        </select>
+                                                                      </div>
+
+                                                                      <input type="hidden" name="userid" value="<?= $resident['UserID'] ?>">
+
+                                                                      <button type="submit" class="btn btn-primary">เพิ่ม</button>
+                                                                      <button type="button" class="btn btn-default" data-dismiss="modal">ปิด</button>
+                                                                    </form>
                                                                   </div>
-
-                                                                  <div class="form-group">
-                                                                    <label for="usertype">ประเภทสมาชิก</label>
-                                                                    <select name="usertype" class="form-control" required>
-                                                                      <option value="">โปรดเลือก</option>
-                                                                      <?php foreach ($userTypes as $type): ?>
-                                                                        <option value="<?= $type['FieldCode'] ?>"<?= $usertype[0] == $type['FieldCode'] ? ' selected' : '' ?>>
-                                                                          <?= $type['ValueT'] ?>
-                                                                        </option>
-                                                                      <?php endforeach ?>
-                                                                    </select>
-                                                                  </div>
-
-                                                                  <input type="hidden" name="userid" value="<?= $resident['UserID'] ?>">
-
-                                                                  <button type="submit" class="btn btn-primary">เพิ่ม</button>
-                                                                  <button type="button" class="btn btn-default" data-dismiss="modal">ปิด</button>
-                                                                </form>
+                                                                </div>
+                                                                
                                                               </div>
                                                             </div>
 

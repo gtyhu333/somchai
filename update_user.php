@@ -31,7 +31,8 @@ try {
     $stmt->bindParam(':userid', $_POST['userid']);
     $stmt->bindParam(':userlogin', $_POST['username']);
     if ($hasPass) {
-        $stmt->bindParam(':passwd', password_hash($_POST['password'], PASSWORD_DEFAULT));
+        $pass = password_hash($_POST['password'], PASSWORD_DEFAULT);
+        $stmt->bindParam(':passwd', $pass);
     }
     $stmt->bindParam(':usertype', $_POST['usertype']);
 
@@ -45,5 +46,5 @@ try {
 $db->commit();
 
 // redirect back
-header('Location: member.php');
+header('Location: ' . $_SERVER['HTTP_REFERER']);
 exit();
