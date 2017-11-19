@@ -158,7 +158,7 @@ catch(PDOException $e) {
                                                     <button class="btn btn-primary" type="submit">เพิ่มอาคาร</button>
                                                   </form>
 
-                                                  <form action="building_delete.php" method="POST" style="display: inline-block;">
+                                                  <form action="building_delete.php" method="POST" style="display: inline-block;"  onsubmit="return confirm('ต้องการลบอาคารหรือไม่')">
                                                     <input type="hidden" name="id" value="1">
                                                     <button class="btn btn-danger" type="submit">ลบอาคาร</button>
                                                   </form>
