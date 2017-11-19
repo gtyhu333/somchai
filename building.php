@@ -58,6 +58,16 @@ try {
 catch(PDOException $e) {
   echo "Error: " . $e->getMessage();
 }
+
+try {
+  $stmt = $db->prepare("SELECT * FROM building;");
+  $stmt->execute();
+  $stmt->setFetchMode(PDO::FETCH_ASSOC);
+  $resultBuilding = $stmt->fetchAll();
+}
+catch(PDOException $e) {
+  echo "Error: " . $e->getMessage();
+}
 ?>
 <html lang="en">
 
@@ -124,6 +134,42 @@ catch(PDOException $e) {
                                          </div>
                                             </div>
                                           </div>
+                                          <?php if ($_SESSION['user_type'] == 9): ?>
+                                          <label>ชื่ออาคาร</label>
+                                              <div class="row">
+                                                <div class="col-md-6">
+                                                  <select class="form-control" id="selectid" onchange="changevalue(this.value);">
+                                                      <?php foreach ($resultBuilding as $value): ?>
+                                                        <option value="<?= $value['BuildingID'] ?>" <?= $value['BuildingID'] == $buildingID ? ' selected' : '' ?>><?= $value['BuildingName'] ?></option>
+                                                      <?php endforeach; ?>
+                                                  </select>
+
+                                                </div>
+
+
+                                                <div class="col-md-6">
+                                                  <form action="building_update_form.php" method="GET" style="display: inline-block;">
+                                                    <input type="hidden" name="id" value="1">
+                                                    <button class="btn btn-primary" type="submit">แก้ไขอาคาร</button>
+                                                  </form>
+
+                                                  <form action="building_insert_form.php" method="GET" style="display: inline-block;">
+                                                    <input type="hidden" name="id" value="1">
+                                                    <button class="btn btn-primary" type="submit">เพิ่มอาคาร</button>
+                                                  </form>
+
+                                                  <form action="building_delete.php" method="POST" style="display: inline-block;">
+                                                    <input type="hidden" name="id" value="1">
+                                                    <button class="btn btn-danger" type="submit">ลบอาคาร</button>
+                                                  </form>
+
+
+                                                <form action="room_insert_form.php" method="POST" style="display: inline-block;">
+                                                  <input type="hidden" name="id" value="1">
+                                                  <button class="btn btn-info" type="submit">เพิ่มห้องพัก</button>
+                                                </form>
+                                        </div>
+                                        <?php endif ?>
                                         <div class="panel-body">
                                           <div class="row">
                                             <div class="col-md-6">
