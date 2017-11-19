@@ -2,25 +2,25 @@
 <?php
 require 'DBconnect.php';
 
-$buildingID = isset($_GET['building']) ? $_GET['building'] : 1;
-
 session_start();
 if (!isset($_SESSION["user_id"])){
   header('Location: login.php');
   die();
 }
 
-if ($_SESSION['user_type'] != 9) {
+if (!in_array($_SESSION['user_type'], [2, 3, 4, 5, 9])) {
   header('Location: login.php');
   die();
 }
 
-if ($_SESSION['user_type'] != 9) {
-  header('Location: login.php');
-  die();
+if ($_SESSION['user_type'] == 9) {
+  $buildingID = isset($_GET['building']) ? $_GET['building'] : 1;
+} else {
+  $buildingID = $_SESSION['building_id'];
 }
+
 try {
-  $stmt = $db->prepare("
+  $stmt = $db->prepare($sql = "
   SELECT building.BuildingName, room.RoomID, room.Floor, room.RoomName, allvars.ValueT as RoomStatus, room.RoomType,
   room.RoomRate, room.InsurantRate
 
@@ -35,16 +35,6 @@ try {
   $stmt->execute();
   $stmt->setFetchMode(PDO::FETCH_ASSOC);
   $result = $stmt->fetchAll();
-}
-catch(PDOException $e) {
-  echo "Error: " . $e->getMessage();
-}
-
-try {
-  $stmt = $db->prepare("SELECT * FROM building;");
-  $stmt->execute();
-  $stmt->setFetchMode(PDO::FETCH_ASSOC);
-  $resultBuilding = $stmt->fetchAll();
 }
 catch(PDOException $e) {
   echo "Error: " . $e->getMessage();
@@ -111,7 +101,11 @@ catch(PDOException $e) {
     <h3>หอพักบุคลากรมหาวิทยาลัยอุบลราชธานี</h3></div>
 
     <!-- Navigation -->
-    <?php require 'admin_nav.php'; ?>
+    <?php if ($_SESSION['user_type'] == 2 || $_SESSION['user_type'] == 3): ?>
+      <?php require 'user_2_nav.php'; ?>
+    <?php else: ?>
+      <?php require 'user_'. $_SESSION['user_type'] .'_nav.php'; ?>
+    <?php endif ?>
 
     <div class="container">
 
@@ -128,45 +122,8 @@ catch(PDOException $e) {
                                         <font color ="#0080ff"><h2 class="intro-text text-center">การจัดการอาคารที่พัก</h2></font>
                                         <hr>
                                          </div>
-
-                                              <label>ชื่ออาคาร</label>
-                                              <div class="row">
-                                                <div class="col-md-6">
-                                                  <select class="form-control" id="selectid" onchange="changevalue(this.value);">
-                                                      <?php foreach ($resultBuilding as $value): ?>
-                                                        <option value="<?= $value['BuildingID'] ?>" <?= $value['BuildingID'] == $buildingID ? ' selected' : '' ?>><?= $value['BuildingName'] ?></option>
-                                                      <?php endforeach; ?>
-                                                  </select>
-
-                                                </div>
-
-
-                                                <div class="col-md-6">
-                                                  <form action="building_update_form.php" method="GET" style="display: inline-block;">
-                                                    <input type="hidden" name="id" value="1">
-                                                    <button class="btn btn-primary" type="submit">แก้ไขอาคาร</button>
-                                                  </form>
-
-                                                  <form action="building_insert_form.php" method="GET" style="display: inline-block;">
-                                                    <input type="hidden" name="id" value="1">
-                                                    <button class="btn btn-primary" type="submit">เพิ่มอาคาร</button>
-                                                  </form>
-
-                                                  <form action="building_delete.php" method="POST" style="display: inline-block;">
-                                                    <input type="hidden" name="id" value="1">
-                                                    <button class="btn btn-danger" type="submit">ลบอาคาร</button>
-                                                  </form>
-
-
-                                                <form action="room_insert_form.php" method="POST" style="display: inline-block;">
-                                                  <input type="hidden" name="id" value="1">
-                                                  <button class="btn btn-info" type="submit">เพิ่มห้องพัก</button>
-                                                </form>
-                                        </div>
-                                              </div>
                                             </div>
                                           </div>
-                                        </thead>
                                         <div class="panel-body">
                                           <div class="row">
                                             <div class="col-md-6">

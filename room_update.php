@@ -34,7 +34,7 @@ try {
     $stm->bindParam(':insurate1',$insurate);
     $stm->bindParam(':roomid2',$roomid);
     $stm->execute();
-  header('location:building.php?building=' . $buildingID);
+    header('location:building.php?building=' . $buildingID);
     exit();
 
   }catch(PDOException $e) {

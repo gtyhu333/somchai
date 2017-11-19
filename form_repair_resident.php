@@ -13,20 +13,15 @@ try {
   $stmt->bindParam(1, $_SESSION['user_id'], PDO::PARAM_INT);
   $stmt->execute();
   $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+  $stmt = $db->prepare("SELECT * FROM room_stuff WHERE `RoomID` = ?;");
+  $stmt->bindParam(1, $user['RoomID']);
+  $stmt->execute();
+  $stuffs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 } catch (Exception $e) {
   echo "Error: {$e->getMessage()}";
   die();
-}
-
-if ($_SESSION['user_type'] == 9) {
-  try {
-    $stmt = $db->prepare("SELECT * FROM building");
-    $stmt->execute();
-    $stmt->setFetchMode(PDO::FETCH_ASSOC);
-    $buildings = $stmt->fetchAll();
-  } catch(PDOException $e) {
-    echo "Error: " . $e->getMessage();
-  }
 }
 
 ?>
@@ -96,7 +91,7 @@ if ($_SESSION['user_type'] == 9) {
               <a href="form_switch.php"><b>แบบฟอร์มขอสลับห้องพัก</b></a>
             </li>
             <li>
-              <a href="form_repair_user.php"><b>แบบฟอร์มแจ้งซ่อม</b></a>
+              <a href="form_repair_resident.php"><b>แบบฟอร์มแจ้งซ่อม</b></a>
             </li>
             <li>
               <a href="logout.php">ออกจากระบบ</a>
@@ -146,47 +141,6 @@ if ($_SESSION['user_type'] == 9) {
     </nav>
     <?php endif ?>
 
-    
-    <?php if ($_SESSION['user_type'] == 9): ?>
-    <nav class="navbar navbar-default" role="navigation">
-      <div class="container">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <!-- navbar-brand is hidden on larger screens, but visible when the menu is collapsed -->
-          <a class="navbar-brand" href="index.html">Business Casual</a>
-        </div>
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-          <ul class="nav navbar-nav">
-            <li>
-              <a href="index_admin.php">หน้าหลัก</a>
-            </li>
-            <li>
-              <a href="building.php">จัดการอาคารที่พัก</a>
-            </li>
-            <li>
-              <a href="form_handle.php">จัดการแบบฟอร์ม</a>
-            </li>
-            <li>
-              <a href="member.php">จัดการสมาชิก</a>
-            </li>
-            <li>
-              <a href="logout.php">ออกจากระบบ</a>
-            </li>
-          </ul>
-        </div>
-        <!-- /.navbar-collapse -->
-      </div>
-      <!-- /.container -->
-    </nav>
-    <?php endif ?>
-
     <div class="container">
       <div class="box">
         <div class="panel panel-default">
@@ -204,34 +158,14 @@ if ($_SESSION['user_type'] == 9) {
                   <div class="row">
                     <div class="form-group">
                       <label>แฟลต</label>
-                      <?php if ($_SESSION['user_type'] == 1 || $_SESSION['user_type'] == 3): ?>
                       <input type="text" class="form-control" readonly value="<?= $user['Building'] ?>">
-                      <?php endif ?>
-
-                      <?php if ($_SESSION['user_type'] == 9): ?>
-                      <select name="buildingid" class="form-control" required onchange="fetchRoom(this.value)">
-                        <option value="">-- โปรดเลือก --</option>
-                        <?php foreach ($buildings as $building): ?>
-                        <option value="<?= $building['BuildingID'] ?>"><?= $building['BuildingName'] ?></option>
-                        <?php endforeach ?>
-                      </select>
-                      <?php endif ?>
-
                     </div>
                   </div>
 
                   <div class="row">
                     <div class="form-group">
                       <label>ห้อง</label>
-                      <?php if ($_SESSION['user_type'] == 1): ?>
                       <input type="text" class="form-control" readonly value="<?= roomNumber($user['RoomID'], $db) ?>">
-                      <?php endif ?>
-
-                      <?php if ($_SESSION['user_type'] == 9 || $_SESSION['user_type'] == 3): ?>
-                      <select name="roomid" class="form-control" required onchange="fetchStuff(this.value)">
-                        <option value="">-- โปรดเลือกแฟลต --</option>
-                      </select>
-                      <?php endif ?>
                     </div>
                   </div>
 
@@ -240,12 +174,24 @@ if ($_SESSION['user_type'] == 9) {
                       <label style="display: block;">วัสดุที่ต้องการซ่อม</label>
                     </div>
                   </div>
-
-                  <div id="stufflist">
+                  
+                  <?php if (empty($stuffs)): ?>
                     <div class="row">
-                      <p style="font-size: 1em; color: #777">กรุณาเลือกแฟลต</p>
+                      <p style="font-size: 1em; color: #777">ห้องนี้ยังไม่มีครุภัณฑ์ในระบบ</p>
+                    </div>
+                  <?php else: ?>
+                  <?php foreach (array_chunk($stuffs, 3) as $chunk): ?>
+                  <div class="row">
+                    <div class="form-group">
+                      <?php foreach ($chunk as $stuff): ?>     
+                      <label class="checkbox-inline">
+                        <input type="checkbox" name="item[]" value="<?= $stuff['Name'] ?>"> <?= $stuff['Name'] ?>
+                      </label>
+                      <?php endforeach ?>
                     </div>
                   </div>
+                  <?php endforeach ?>
+                  <?php endif ?>
 
                   <div class="row">
                     <div class="form-group">
@@ -328,17 +274,7 @@ if ($_SESSION['user_type'] == 9) {
       $.get(url, function(response) {
         $('select[name="roomid"] option').remove();
 
-        $('select[name="roomid"]').html(response).change();
-      });
-    }
-
-    function fetchStuff(value) {
-      var url = "get_stuff.php?id=" + value;
-
-      $.get(url, function(response) {
-        $('#stufflist').html('');
-
-        $('#stufflist').html(response);
+        $('select[name="roomid"]').html(response);
       });
     }
     </script>

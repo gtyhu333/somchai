@@ -7,7 +7,7 @@ if (!isset($_SESSION["user_id"])){
   die();
 }
 
-if ($_SESSION['user_type'] != 9) {
+if (!in_array($_SESSION['user_type'], [2, 3, 4, 5, 9])) {
   header('Location: login.php');
   die();
 }
@@ -44,7 +44,7 @@ $conn = null;
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>จัดการอาคาร</title>
+    <title>แก้ไขห้องพัก</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -76,54 +76,11 @@ $conn = null;
     <h3>หอพักบุคลากรมหาวิทยาลัยอุบลราชธานี</h3></div>
 
     <!-- Navigation -->
-    <nav class="navbar navbar-default" role="navigation">
-        <div class="container">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <!-- navbar-brand is hidden on larger screens, but visible when the menu is collapsed -->
-                <a class="navbar-brand" href="index.html">Business Casual</a>
-            </div>
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav">
-                  <li>
-                      <a href="building.php">จัดการอาคารที่พัก</a>
-                  </li>
-                  <li>
-                      <div class="dropdown" style="padding: 20px;">
-                        <a href="#" class="dropdown-toggle" id="financeLink" data-toggle="dropdown"
-                        style="color: #777">
-                          จัดการด้านการเงิน <span class="caret"></span>
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="financeLink">
-                          <li><a href="resident_monthly_expense.php">จัดการค่าห้องประจำเดือน</a></li>
-                          <li role="separator" class="divider"></li>
-                          <li><a href="building_water_bill.php">จัดการค่าน้ำ</a></li>
-                          <li><a href="building_electric_bill.php">จัดการค่าไฟ</a></li>
-                        </ul>
-                      </div>
-                  </li>
-                  <li>
-                      <a href="form_handle.php">จัดการแบบฟอร์ม</a>
-                  </li>
-                  <li>
-                      <a href="member.php">จัดการสมาชิก</a>
-                  </li>
-                  <li>
-                      <a href="logout.php">ออกจากระบบ</a>
-                  </li>
-                </ul>
-            </div>
-            <!-- /.navbar-collapse -->
-        </div>
-        <!-- /.container -->
-    </nav>
+    <?php if ($_SESSION['user_type'] == 2 || $_SESSION['user_type'] == 3): ?>
+      <?php require 'user_2_nav.php'; ?>
+    <?php else: ?>
+      <?php require 'user_'. $_SESSION['user_type'] .'_nav.php'; ?>
+    <?php endif ?>
 
     <div class="container">
 
@@ -138,75 +95,74 @@ $conn = null;
 
                                     <div class="col-lg-12">
                                   <hr>
-                                  <font color ="#0080ff"><h2 class="intro-text text-center">การแก้ไขห้องพัก</h2></font>
+                                  <font color ="#0080ff"><h2 class="intro-text text-center">แก้ไขห้องพัก <?= $result['RoomName'] ?> <?= $result['BuildingName'] ?></h2></font>
                                   <hr>
                                    </div>
-                                      <div class="col-lg-6">
+                                   <div class="col-lg-6">
 
-                                        <form role="form" action= "room_update.php" method="post">
+                                    <form role="form" action= "room_update.php" method="post">
 
-                                                <div class="form-group">
-                                                    <label>เลือกแฟลต</label>
-                                                    <select class="form-control" name="build1">
-                                                      <?php foreach ($resultBuilding as $building): ?>
-                                                        <option value="<?= $building['BuildingID'] ?>"><?= $building['BuildingName'] ?> </option>
-                                                      <?php endforeach; ?>
-                                                    </select>
-                                                </div>
+                                      <div class="form-group">
+                                        <label>เลือกแฟลต</label>
+                                        <select class="form-control" name="build1">
+                                          <?php foreach ($resultBuilding as $building): ?>
+                                            <option value="<?= $building['BuildingID'] ?>"<?= $result['BuildingName'] == $building['BuildingName'] ? ' selected' : '' ?>>
+                                              <?= $building['BuildingName'] ?>
+                                              </option>
+                                          <?php endforeach; ?>
+                                        </select>
+                                      </div>
 
-                                                  <div class="form-group">
-                                                      <label>เพิ่มเลขห้อง</label>
-                                                      <input class="form-control" name="roomname1" value="<?= $result['RoomName']?>">
-                                                      <p class="help-block">ตัวอย่าง : 101 </p>
-                                                  </div>
+                                      <div class="form-group">
+                                        <label>เพิ่มเลขห้อง</label>
+                                        <input class="form-control" name="roomname1" value="<?= $result['RoomName']?>">
+                                        <p class="help-block">ตัวอย่าง : 101 </p>
+                                      </div>
 
-                                                  <div class="form-group">
-                                                      <label>กำหนดชั้น</label>
-                                                      <input class="form-control" name="floor1" value="<?= $result['Floor']?>">
-                                                      <p class="help-block">ตัวอย่าง : 1 </p>
-                                                  </div>
+                                      <div class="form-group">
+                                        <label>กำหนดชั้น</label>
+                                        <input class="form-control" name="floor1" value="<?= $result['Floor']?>">
+                                        <p class="help-block">ตัวอย่าง : 1 </p>
+                                      </div>
 
-                                                  <div class="form-group">
-                                                      <label>เลือกประเภทห้อง</label>
-                                                      <select class="form-control" name= "roomtype1" value="<?= $result['RoomType']?>">
-                                                        <option value="1">ห้องโสด</option>
-                                                        <option value="2">ห้องครอบครัว</option>
-                                                        <option value="3">เรือนรับรอง</option>
-                                                      </select>
-                                                  </div>
+                                      <div class="form-group">
+                                        <label>เลือกประเภทห้อง</label>
+                                        <select class="form-control" name= "roomtype1" value="<?= $result['RoomType']?>">
+                                          <option value="1"<?= $result['RoomType'] == 'ห้องโสด' ? ' selected' : ''?>>ห้องโสด</option>
+                                          <option value="2"<?= $result['RoomType'] == 'ห้องครอบครัว' ? ' selected' : ''?>>ห้องครอบครัว</option>
+                                          <option value="3"<?= $result['RoomType'] == 'เรือนรับรอง' ? ' selected' : ''?>>เรือนรับรอง</option>
+                                        </select>
+                                      </div>
 
-                                                  <div class="form-group">
-                                                      <label>เลือกสถานะห้องพัก</label>
-                                                      <select class="form-control" name="roomstatus1" value="<?= $result['RoomStatus']?>">
-                                                        <option value="1">ว่าง พร้อมใช้งาน</option>
-                                                        <option value="2">ไม่ว่าง</option>
-                                                      </select>
-                                                  </div>
+                                      <div class="form-group">
+                                        <label>เลือกสถานะห้องพัก</label>
+                                        <select class="form-control" name="roomstatus1" value="<?= $result['RoomStatus']?>">
+                                          <option value="1">ว่าง พร้อมใช้งาน</option>
+                                          <option value="2"<?= $result['RoomStatus'] != 'ไม่ว่าง' ? ' selected' : '' ?>>ไม่ว่าง</option>
+                                        </select>
+                                      </div>
 
-                                                  <div class="form-group">
-                                                      <label>กำหนดค่าเช่าห้องพัก</label>
-                                                      <input class="form-control" name="roomrate1" value="<?= $result['RoomRate']?>">
-                                                      <p class="help-block">ตัวอย่าง : 1000 </p>
-                                                  </div>
+                                      <div class="form-group">
+                                        <label>กำหนดค่าเช่าห้องพัก</label>
+                                        <input class="form-control" name="roomrate1" value="<?= $result['RoomRate']?>">
+                                        <p class="help-block">ตัวอย่าง : 1000 </p>
+                                      </div>
 
-                                                  <div class="form-group">
-                                                      <label>กำหนดค่าของเสียหาย</label>
-                                                      <input class="form-control" name="insurate1" value="<?= $result['InsurantRate']?>">
-                                                      <p class="help-block">ตัวอย่าง : 1000 </p>
-                                                  </div>
+                                      <div class="form-group">
+                                        <label>กำหนดค่าของเสียหาย</label>
+                                        <input class="form-control" name="insurate1" value="<?= $result['InsurantRate']?>">
+                                        <p class="help-block">ตัวอย่าง : 1000 </p>
+                                      </div>
 
-                                                  <input type="hidden" name="roomid1" value="<?= $result['RoomID']?>">
-                                                  <button type="submit" class="btn btn-default">ตกลง</button>
-                                                  <button type="reset" class="btn btn-default">ยกเลิก</button>
-                                                  <br></br>
+                                      <div class="form-group">
+                                        <a href="room_update_stuff_form.php?roomid=<?= $result['RoomID'] ?>">แก้ไขครุภัณฑ์</a> <br>
+                                      </div>
 
-
-
-
-
-
-                                </table>
-                            </div>
+                                      <input type="hidden" name="roomid1" value="<?= $result['RoomID']?>">
+                                      <button type="submit" class="btn btn-default">ตกลง</button>
+                                      <a href="building.php" class="btn btn-default">ยกเลิก</a>
+                                    </form>
+                                  </div>
                         </div>
                     </div>
                 </div>

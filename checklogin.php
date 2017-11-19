@@ -14,6 +14,8 @@ try {
       session_start();
       $_SESSION["user_id"] = $result->UserID;
       $_SESSION["user_type"] = $result->UserType;
+      $_SESSION["building_id"] = $result->BuildingID;
+      $_SESSION["copy_from"] = $result->CopyFrom;
       switch ($result->UserType) {
         case 9:
           header('Location: building.php');

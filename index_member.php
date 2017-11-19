@@ -14,9 +14,11 @@ if ($_SESSION['user_type'] != 1) {
   die();
 }
 
+$user_id = $_SESSION['copy_from'] ? $_SESSION['copy_from'] : $_SESSION['user_id'];
+
 try {
     $stmt = $db->prepare("SELECT * FROM v_resident WHERE UserID = :userid AND Status = '1'");
-    $stmt->bindParam(':userid', $_SESSION['user_id']);
+    $stmt->bindParam(':userid', $user_id);
     $stmt->execute();
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -41,9 +43,11 @@ try {
         $bills = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        array_walk($bills, function (&$value, $key) {
-            return [$key => number_format($value)];
-        });
+        if ($bills) {
+            array_walk($bills, function (&$value, $key) {
+                return [$key => number_format($value)];
+            });
+        }
     }
 
     // dd($bills);
@@ -111,7 +115,7 @@ try {
                         <a href="form_switch.php"><b>แบบฟอร์มขอสลับห้องพัก</b></a>
                     </li>
                     <li>
-                        <a href="form_repair_user.php"><b>แบบฟอร์มแจ้งซ่อม</b></a>
+                        <a href="form_repair_resident.php"><b>แบบฟอร์มแจ้งซ่อม</b></a>
                     </li>
                     <li>
                         <a href="logout.php">ออกจากระบบ</a>
@@ -133,13 +137,15 @@ try {
                     <hr>
                     <h2 class="intro-text text-center">ข้อมูลส่วนตัว
                     </h2>
+                    <h3 class="intro-text text-center"><?= $user['Name'] ?></h3>
+                    <a class="text-center" href="edit_profile.php" style="display: block;"><b>แก้ไขข้อมูลส่วนตัว</b></a>
                     <hr>
                     <hr class="visible-xs">
                     <h3>ข้อมูลห้องพักอาศัย</h3>
                     <p>ห้อง: <?= roomNumber($user['RoomID'], $db) ?> <?= $user['Building'] ?></p>
                     <p>วันที่เริ่มอยู่อาศัย: <?= sqlDateToThaiDate($user['StartDate']) ?></p>
                     
-                    <?php if ($needPayment): ?>
+                    <?php if ($needPayment && $bills): ?>
                     <h3>ค่าใช้จ่ายประจำเดือน</h3>
                     <div class="col-md-5">
                         <table class="table">

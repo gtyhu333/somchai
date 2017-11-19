@@ -2,53 +2,25 @@
 <?php
 require 'DBconnect.php';
 
-$buildingID = isset($_GET['building']) ? $_GET['building'] : 1;
-
-
 try {
   $stmt = $db->prepare("
-  SELECT building.BuildingName, room.RoomID, room.Floor, room.RoomName, allvars.ValueT as RoomStatus, room.RoomType,
-  room.RoomRate, room.InsurantRate
+SELECT DISTINCT BuildingName, 
+SUM(case RoomType when 1 then 1 else 0 end) as singleroom,
+SUM(case RoomType when 2 then 1 else 0 end) as familyroom,
+SUM(case RoomStatus when 'ว่าง พร้อมใช้งาน' then 1 else 0 end) as vacant
+FROM (SELECT building.BuildingName, room.RoomID, room.Floor, room.RoomName, allvars.ValueT as RoomStatus, room.RoomType,
+room.RoomRate, room.InsurantRate
 
-  FROM building, room, allvars
+FROM building, room, allvars
 
-  WHERE room.BuildingID = building.BuildingID
-  AND allvars.FieldName = 'RoomStatus'
-  AND room.RoomStatus = allvars.FieldCode
-  AND building.BuildingID = {$buildingID}
+WHERE room.BuildingID = building.BuildingID
+AND allvars.FieldName = 'RoomStatus'
+AND room.RoomStatus = allvars.FieldCode) as t1
+GROUP BY BuildingName
   ");
   $stmt->execute();
   $stmt->setFetchMode(PDO::FETCH_ASSOC);
   $result = $stmt->fetchAll();
-}
-catch(PDOException $e) {
-  echo "Error: " . $e->getMessage();
-}
-
-try {
-  $stmt = $db->prepare("SELECT * FROM building;");
-  $stmt->execute();
-  $stmt->setFetchMode(PDO::FETCH_ASSOC);
-  $resultBuilding = $stmt->fetchAll();
-}
-catch(PDOException $e) {
-  echo "Error: " . $e->getMessage();
-}
-
-try {
-  $stmt = $db->prepare("
-    SELECT
-    SUM(CASE WHEN RoomStatus IN (1, 2) THEN 1 ELSE 0 END) Vacant,
-    SUM(CASE WHEN RoomStatus IN (3) THEN 1 ELSE 0 END) Occupied,
-    SUM(CASE WHEN RoomType IN (1, 4) THEN 1 ELSE 0 END) SingleRoom,
-    SUM(CASE WHEN RoomType IN (2, 3, 5) THEN 1 ELSE 0 END) FamilyRoom
-    FROM room
-    WHERE BuildingID = ?;"
-  );
-  $stmt->bindParam(1, $buildingID, PDO::PARAM_INT);
-  $stmt->execute();
-  $stmt->setFetchMode(PDO::FETCH_ASSOC);
-  $roomCount = $stmt->fetch();
 }
 catch(PDOException $e) {
   echo "Error: " . $e->getMessage();
@@ -160,12 +132,14 @@ catch(PDOException $e) {
                                                 <th><font color ="green">ห้องพักว่าง</font></th>
                                               </thead>
                                               <tbody>
+                                                <?php foreach ($result as $building): ?>
                                                 <tr>
-                                                  <td></td>
-                                                  <td><?= $roomCount['SingleRoom'] ?> ห้อง</td>
-                                                  <td><?= $roomCount['FamilyRoom'] ?> ห้อง</td>
-                                                  <td><font color ="green"><?= $roomCount['Vacant'] ?> ห้อง</font></td>
+                                                  <td><?= $building['BuildingName'] ?></td>
+                                                  <td><?= $building['singleroom'] ?> ห้อง</td>
+                                                  <td><?= $building['familyroom'] ?> ห้อง</td>
+                                                  <td style="color: green"><?= $building['vacant'] ?> ห้อง</td>
                                                 </tr>
+                                                <?php endforeach ?>
                                               </tbody>
                                             </table>
                                           </div>
