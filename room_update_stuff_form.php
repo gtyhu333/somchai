@@ -110,7 +110,10 @@ catch(PDOException $e) {
                 <td><?= $stuff['Name'] ?></td>
                 <td>
                   <button class="btn btn-primary" onclick="showEditModal(event, <?= $stuff['id'] ?>)">แก้ไข</button>
-                  <button class="btn btn-danger">ลบ</button>
+                  <form action="room_delete_stuff.php" method="POST" style="display: inline">
+                    <input type="hidden" name="id" value="<?= $stuff['id'] ?>">
+                    <button class="btn btn-danger" type="submit">ลบ</button>
+                  </form>
                 </td>
               </tr>
               <?php endforeach ?>
