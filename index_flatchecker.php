@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <?php
+require 'DBConnect.php';
+
 session_start();
 if (!isset($_SESSION["user_id"])){
   header('Location: login.php');
@@ -11,7 +13,51 @@ if ($_SESSION['user_type'] != 4) {
     session_destroy();
   header('Location: login.php');
   die();
-}?>
+}
+
+$user_id = $_SESSION['copy_from'] ? $_SESSION['copy_from'] : $_SESSION['user_id'];
+
+try {
+    $stmt = $db->prepare("SELECT * FROM member WHERE UserID = :userid;");
+    $stmt->bindParam(':userid', $user_id);
+    $stmt->execute();
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    $stmt = $db->prepare("
+        SELECT 1 FROM payments WHERE ResidentID = :residentid AND Month = :month 
+        AND Year = :year
+    ");
+    $thisMonth = (int) date("n");
+    $thisYear = (int) date("Y");
+    $stmt->bindParam(':residentid', $user['ResidentID']);
+    $stmt->bindParam(':month', $thisMonth);
+    $stmt->bindParam(':year', $thisYear);
+    $stmt->execute();
+    $payments = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stmt->closeCursor();
+    
+    if ($needPayment = empty($payments)) {
+        $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, true); // fixes 'packet ouf of order bug'
+        $stmt = $db->prepare("CALL getMonthly(:roomid)");
+        $stmt->bindParam(':roomid', $user['RoomID']);
+        $stmt->execute();
+        $bills = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        if ($bills) {
+            array_walk($bills, function (&$value, $key) {
+                return [$key => number_format($value)];
+            });
+        }
+    }
+
+    // dd($bills);
+
+} catch (Exception $e) {
+    echo "Error {$e->getMessage()}";
+    die();
+}
+?>
 <head>
 
     <meta charset="utf-8">
@@ -47,37 +93,7 @@ if ($_SESSION['user_type'] != 4) {
     <div class="address-bar">มหาวิทยาลัยอุบลราชธานี</div>
 
     <!-- Navigation -->
-    <nav class="navbar navbar-default" role="navigation">
-        <div class="container">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <!-- navbar-brand is hidden on larger screens, but visible when the menu is collapsed -->
-                <a class="navbar-brand" href="index.html">Business Casual</a>
-            </div>
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav">
-                    <li>
-                        <a href="form_handle_flatchecker.php">จัดการแบบฟอร์ม</a>
-                    </li>
-                    <li>
-                        <a href="form_switch.php">ความเคลื่อนไหวในหอพัก</a>
-                    </li>
-                    <li>
-                        <a href="logout.php">ออกจากระบบ</a>
-                    </li>
-                </ul>
-            </div>
-            <!-- /.navbar-collapse -->
-        </div>
-        <!-- /.container -->
-    </nav>
+    <?php require 'user_4_nav.php'; ?>
 
     <div class="container">
 
@@ -89,6 +105,8 @@ if ($_SESSION['user_type'] != 4) {
                     <hr>
                     <h2 class="intro-text text-center">ข้อมูลส่วนตัว
                     </h2>
+                    <h3 class="intro-text text-center"><?=  $user['UserPNameT'] . $user['UserNameT'] . ' ' . $user['UserSNameT'] ?></h3>
+                    <a class="text-center" href="edit_profile.php" style="display: block;"><b>แก้ไขข้อมูลส่วนตัว</b></a>
                     <hr>
                 </div>
             </div>

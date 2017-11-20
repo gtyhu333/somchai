@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <?php
+require 'DBConnect.php';
+
 session_start();
 if (!isset($_SESSION["user_id"])){
   header('Location: login.php');
@@ -10,7 +12,18 @@ if (!isset($_SESSION["user_id"])){
 if ($_SESSION['user_type'] != 2) {
   header('Location: login.php');
   die();
-}?>
+}
+
+try {
+    $stmt = $db->prepare("SELECT * FROM v_resident WHERE UserID = :userid AND Status = '1'");
+    $stmt->bindParam(':userid', $user_id);
+    $stmt->execute();
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+} catch (Exception $e) {
+    echo "Error {$e->getMessage()}";
+    die();
+}
+?>
 <head>
 
     <meta charset="utf-8">
@@ -57,6 +70,8 @@ if ($_SESSION['user_type'] != 2) {
                 <div class="col-lg-12">
                     <hr>
                     <h2 class="intro-text text-center">ข้อมูลส่วนตัว
+                        <h3 class="intro-text text-center"><?= $user['Name'] ?></h3>
+                        <a class="text-center" href="edit_profile.php" style="display: block;"><b>แก้ไขข้อมูลส่วนตัว</b></a>
                     </h2>
                     <hr>
                 </div>

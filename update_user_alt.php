@@ -8,11 +8,6 @@ if (!isset($_SESSION["user_id"])){
     die();
 }
 
-if ($_SESSION['user_type'] != 9) {
-    header('Location: login.php');
-    die();
-}
-
 $db->beginTransaction();
 
 try {

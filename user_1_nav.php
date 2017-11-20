@@ -14,20 +14,20 @@
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-              <ul class="nav navbar-nav">
-                <li>
-                    <a href="form_handle_flatmanager.php">จัดการแบบฟอร์ม</a>
-                </li>
-                <li>
-                  <a href="building.php">สถานะหอพักในสังกัด</a>
-                </li>
-                <li>
-                  <a href="form_switch.php">ความเคลื่อนไหวในหอพักในสังกัด</a>
-                </li>
-                <li>
-                  <a href="logout.php">ออกจากระบบ</a>
-                </li>
-              </ul>
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a href="form_return.php"><b>แบบฟอร์มขอส่งคืนห้องพัก</b></a>
+                    </li>
+                    <li>
+                        <a href="form_switch.php"><b>แบบฟอร์มขอสลับห้องพัก</b></a>
+                    </li>
+                    <li>
+                        <a href="form_repair_resident.php"><b>แบบฟอร์มแจ้งซ่อม</b></a>
+                    </li>
+                    <li>
+                        <a href="logout.php">ออกจากระบบ</a>
+                    </li>
+                </ul>
             </div>
             <!-- /.navbar-collapse -->
         </div>
