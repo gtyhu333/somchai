@@ -190,3 +190,7 @@ footer p {
         clear: both;
     }
 }
+
+.navbar-nav > li  a {
+    font-size: 0.8em;
+}

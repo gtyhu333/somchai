@@ -18,7 +18,7 @@
                       <a href="building.php">จัดการอาคารที่พัก</a>
                   </li>
                   <li>
-                      <div class="dropdown" style="padding: 20px;">
+                      <div class="dropdown" style="padding: 16px 20px 0;">
                         <a href="#" class="dropdown-toggle" id="financeLink" data-toggle="dropdown"
                         style="color: #777">
                           จัดการด้านการเงิน <span class="caret"></span>
@@ -36,6 +36,9 @@
                   </li>
                   <li>
                       <a href="member.php">จัดการสมาชิก</a>
+                  </li>
+                  <li>
+                      <a href="news_manage.php">จัดการข่าว</a>
                   </li>
                   <li>
                       <a href="logout.php">ออกจากระบบ</a>

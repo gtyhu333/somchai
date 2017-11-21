@@ -110,7 +110,7 @@ catch(PDOException $e) {
                 <td><?= $stuff['Name'] ?></td>
                 <td>
                   <button class="btn btn-primary" onclick="showEditModal(event, <?= $stuff['id'] ?>)">แก้ไข</button>
-                  <form action="room_delete_stuff.php" method="POST" style="display: inline">
+                  <form action="room_delete_stuff.php" method="POST" style="display: inline" onsubmit="return confirm('ต้องการลบคุรุภัณฑ์นี้หรือไม่')">
                     <input type="hidden" name="id" value="<?= $stuff['id'] ?>">
                     <button class="btn btn-danger" type="submit">ลบ</button>
                   </form>

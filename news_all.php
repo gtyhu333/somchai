@@ -9,7 +9,7 @@ $range = [
 ];
 
 try {
-  $stmt = $db->prepare("SELECT * FROM news ORDER BY date DESC LIMIT 5");
+  $stmt = $db->prepare("SELECT * FROM news ORDER BY date DESC");
   $stmt->execute();
   $news = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
@@ -89,7 +89,7 @@ catch(PDOException $e) {
           <div class="row">
             <div class="col-lg-12">
               <h4 class="text-center" style="color: hsl(211, 96%, 54%)">
-                ประกาศข่าวสารจากหอพักบุคลากรมหาวิทยาลัยอุบลราชธานี
+                ประกาศข่าวสารทั้งหมดจากหอพักบุคลากรมหาวิทยาลัยอุบลราชธานี
               </h4>
             </div>
           </div>
@@ -116,8 +116,7 @@ catch(PDOException $e) {
 
           <div class="row">
             <div class="col-lg-12 text-center">
-              <a href="news_all.php" class="btn btn-default">ประกาศทั้งหมด</a>
-              <a href="score_index.php" class="btn btn-default">ดูผลการประเมินคะแนนล่าสุด</a>
+              <a href="index.php" class="btn btn-default">กลับหน้าหลัก</a>
             </div>
           </div>
         </div>

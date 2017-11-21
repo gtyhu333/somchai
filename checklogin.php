@@ -18,7 +18,7 @@ try {
       $_SESSION["copy_from"] = $result->CopyFrom;
       switch ($result->UserType) {
         case 9:
-          header('Location: building.php');
+          header('Location: index_admin.php');
           exit();
           break;
         case 1:

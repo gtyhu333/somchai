@@ -85,7 +85,7 @@ catch(PDOException $e) {
     <link href="css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link href="css/business-casual.css" rel="stylesheet">
+    <link href="css/business-casual.css?1" rel="stylesheet">
 
     <link rel="stylesheet" href="css/dataTables.bootstrap.min.css">
 
@@ -113,7 +113,7 @@ catch(PDOException $e) {
     <!-- Navigation -->
     <?php if ($_SESSION['user_type'] == 2 || $_SESSION['user_type'] == 3): ?>
       <?php require 'user_2_nav.php'; ?>
-    <?php else: ?>
+    <?php elseif ($_SESSION['user_type'] == 9): ?>
       <?php require 'user_'. $_SESSION['user_type'] .'_nav.php'; ?>
     <?php endif ?>
 
