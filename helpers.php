@@ -277,3 +277,10 @@ function map($array, callable $closure)
 
     return $result;
 }
+
+function getUserFullName($id, $db)
+{
+    $userData = getUserInfo($id, $db);
+
+    return "{$userData['UserPNameT']}${userData['UserNameT']} {$userData['UserSNameT']}";
+}

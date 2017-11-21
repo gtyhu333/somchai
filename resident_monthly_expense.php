@@ -249,6 +249,11 @@ function getBill($userid, $year, $month, $db)
                           <input type="hidden" name="residentid" value="<?= $resident['ResidentID'] ?>">
                           <input type="hidden" name="month" value="<?= $selectedMonth ?>">
                           <input type="hidden" name="year" value="<?= $selectedYear ?>">
+                          <input type="hidden" name="water" value="<?= $bills['water_total'] ?>">
+                          <input type="hidden" name="electric" value="<?= $bills['electric_total'] ?>">
+                          <input type="hidden" name="room" value="<?= $bills['room_price'] ?>">
+                          <input type="hidden" name="sum" value="<?= $bills['total'] ?>">
+                          <input type="hidden" name="buildingid" value="<?= $buildingid ?>">
                           <button type="submit" class="btn btn-primary"
                           <?= $bills ? '' : ' disabled' ?>>จ่ายแล้ว</button>
                         </form>

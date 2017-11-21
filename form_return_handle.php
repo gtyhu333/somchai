@@ -2,7 +2,8 @@
 
 require 'DBConnect.php';
 
-// dd($_POST);
+session_start();
+$user_id = $_SESSION['copy_from'] ? $_SESSION['copy_from'] : $_SESSION['user_id'];
 
 $returnDate = implode('-', array_take($_POST, ['year', 'month', 'day']));
 
@@ -44,6 +45,27 @@ try {
     echo "Error: {$e->getMessage()}";
     $db->rollback();
     die();
+}
+
+// INSERT TO LOGS TABLE
+try {
+  $sql = "INSERT INTO event_logs (BuildingID, Type, EventID, UserID, Date) VALUES (:buildingid, :type, :eventid, :userid, :date)";
+  $stmt = $db->prepare($sql);
+
+  $type = "ขอคืนห้อง";
+  $date = date("Y-m-d H:i:s");
+
+  $stmt->bindParam(':buildingid', $_SESSION['building_id']);
+  $stmt->bindParam(':type', $type);
+  $stmt->bindParam(':eventid', $returnFormID);
+  $stmt->bindParam(':userid', $user_id);
+  $stmt->bindParam(':date', $date);
+
+  $stmt->execute();
+} catch (PDOException $e) {
+  echo "Error: " . $e->getMessage();
+  $db->rollback();
+  die();
 }
 
 $db->commit();

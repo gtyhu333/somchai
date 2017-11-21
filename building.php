@@ -113,7 +113,7 @@ catch(PDOException $e) {
     <!-- Navigation -->
     <?php if ($_SESSION['user_type'] == 2 || $_SESSION['user_type'] == 3): ?>
       <?php require 'user_2_nav.php'; ?>
-    <?php elseif ($_SESSION['user_type'] == 9): ?>
+    <?php else: ?>
       <?php require 'user_'. $_SESSION['user_type'] .'_nav.php'; ?>
     <?php endif ?>
 

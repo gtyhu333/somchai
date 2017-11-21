@@ -17,6 +17,11 @@ try {
   $stmt->setFetchMode(PDO::FETCH_ASSOC);
   $faculty = $stmt->fetchAll();
 
+  $stmt = $db->prepare("SELECT * FROM department;");
+  $stmt->execute();
+  $stmt->setFetchMode(PDO::FETCH_ASSOC);
+  $department = $stmt->fetchAll();
+
 
   $stmt = $db->prepare("SELECT * FROM province ORDER BY ProvinceNameT asc;");
   $stmt->execute();
@@ -176,7 +181,7 @@ $conn = null;
                                                 <div class="form-inline">
                                              <div class="form-group">
                                                  <label>สังกัด <font color ="red">*</font> </label>
-                                                 <select style="width:300px" class="form-control" name="position">
+                                                 <select style="width:300px" class="form-control" name="fac">
                                                    <?php foreach ($faculty as $faculty): ?>
                                                      <option value="<?=$faculty['FacID']?>"><?=$faculty['FacNameT']?></option>
                                                    <?php endforeach; ?>
@@ -185,7 +190,7 @@ $conn = null;
                                               &nbsp;
                                              <div class="form-group">
                                                  <label>ภาควิชา <font color ="red">*</font> </label>
-                                                 <select style="width:200px" class="form-control" name="position">
+                                                 <select style="width:200px" class="form-control" name="dept">
                                                    <?php foreach ($department as $department): ?>
                                                      <option value="<?=$department['DeptID']?>"><?=$department['DeptNameT']?></option>
                                                    <?php endforeach; ?>
@@ -242,7 +247,7 @@ $conn = null;
 
                                               <div class="form-group">
                                             <label> <b>|</b> จำนวนบุตร <font color ="red">*</font> </label>
-                                            <input style="width:50px" class="form-control" maxlength = "2"name="son"> <lebel>คน</lebel>
+                                            <input style="width:50px" class="form-control" maxlength = "2" name="son" value="0"> <lebel>คน</lebel>
                                               </div>
                                             </div>
 
@@ -268,8 +273,17 @@ $conn = null;
                                             <div class="row">
                                               <div class="form-group col-sm-4">
                                                   <label>อำเภอ <font color ="red">*</font></label>
-                                                  <select class="form-control" name="city1">
+                                                  <select class="form-control" name="city1" onchange="fetchdistrict(this.value);">
                                                     <option value="" id="defoption">---โปรดเลือกจังหวัด---</option>
+                                                  </select>
+                                              </div>
+                                            </div>
+
+                                            <div class="row">
+                                              <div class="form-group col-sm-4">
+                                                  <label>ตำบล <font color ="red">*</font></label>
+                                                  <select class="form-control" name="district">
+                                                    <option value="" id="defoption">---โปรดเลือกอำเภอ---</option>
                                                   </select>
                                               </div>
                                             </div>
@@ -344,12 +358,12 @@ $conn = null;
                                                   <div class="form-group"> <font color ="red"> &nbsp; <lebel>*</lebel></font>
                                                       <select  style="width:150px" class="form-control" name="building1">
                                                         <option value="">--- เลือกแฟลต --- </option>
-                                                        <option value="1">1</option>
-                                                        <option value="2">2</option>
-                                                        <option value="3">3</option>
-                                                        <option value="4">4</option>
-                                                        <option value="5">5</option>
-                                                        <option value="5">6</option>
+                                                        <option value="1">กันเกรา 1</option>
+                                                        <option value="2">กันเกรา 2</option>
+                                                        <option value="3">กันเกรา 3</option>
+                                                        <option value="4">กันเกรา 4</option>
+                                                        <option value="5">กันเกรา 5</option>
+                                                        <option value="5">กันเกรา 6</option>
                                                       </select>
                                                   </div> &nbsp; <font color ="red"><lebel>*</lebel></font>
                                                 </div>
@@ -419,7 +433,17 @@ $conn = null;
       $.get(url, function(response) {
         $('select[name="city1"] option').remove();
 
-        $('select[name="city1"]').html(response);
+        $('select[name="city1"]').html(response).change();
+      });
+    }
+
+    function fetchdistrict(value) {
+      var url = "getdistrict.php?id=" + value;
+
+      $.get(url, function(response) {
+        $('select[name="district"] option').remove();
+
+        $('select[name="district"]').html(response);
       });
     }
 

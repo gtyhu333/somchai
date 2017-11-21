@@ -81,6 +81,7 @@ try {
   $stmt->bindParam(':userid', $memeberID);
   
   $stmt->execute();
+  $residentID = $db->lastInsertId();
 } catch (PDOException $e) {
   echo "Error: " . $e->getMessage();
   $db->rollback();
@@ -116,6 +117,27 @@ try {
 }
 
 $db->commit();
+
+// INSERT TO LOGS TABLE
+try {
+  $sql = "INSERT INTO event_logs (BuildingID, Type, EventID, UserID, Date) VALUES (:buildingid, :type, :eventid, :userid, :date)";
+  $stmt = $db->prepare($sql);
+
+  $type = "ได้รับการจัดสรรห้อง";
+  $date = date("Y-m-d H:i:s");
+
+  $stmt->bindParam(':buildingid', $room['BuildingID']);
+  $stmt->bindParam(':type', $type);
+  $stmt->bindParam(':eventid', $residentID);
+  $stmt->bindParam(':userid', $memeberID);
+  $stmt->bindParam(':date', $date);
+
+  $stmt->execute();
+} catch (PDOException $e) {
+  echo "Error: " . $e->getMessage();
+  $db->rollback();
+  die();
+}
 
 // redirect back
 header('Location: form_handle.php');

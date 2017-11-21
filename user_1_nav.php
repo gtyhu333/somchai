@@ -16,6 +16,9 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li>
+                        <a href="index_member.php">หน้าหลัก</a>
+                    </li>
+                    <li>
                         <a href="form_return.php"><b>แบบฟอร์มขอส่งคืนห้องพัก</b></a>
                     </li>
                     <li>
