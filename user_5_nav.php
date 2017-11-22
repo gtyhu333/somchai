@@ -16,6 +16,9 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
               <ul class="nav navbar-nav">
                 <li>
+                    <a href="index_flatmanager.php">หน้าหลัก</a>
+                </li>
+                <li>
                     <a href="form_handle_flatmanager.php">จัดการแบบฟอร์ม</a>
                 </li>
                 <li>

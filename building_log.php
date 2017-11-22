@@ -106,16 +106,19 @@ catch(PDOException $e) {
         <div class="container">
 
           <div class="row">
-            <div class="box">
+            <div class="box" style="background-color: #fff">
               <div class="row">
                 <div class="col-lg-12">
-                  <div class="panel panel-default">
-                    <div class="panel-body">
+                  <div class="">
+                    <div class="">
                       <div>
                         <div class="form-group">
                           <div class="col-lg-12">
                             <hr>
-                            <font color ="#0080ff"><h2 class="intro-text text-center">ความเคลื่อนไหวของหอพัก</h2></font>
+                            <font color ="#0080ff"><h2 class="intro-text text-center">
+                              ความเคลื่อนไหวของ<?= getBuidlingName($buildingID, $db) ?>  
+                            </h2>
+                            </font>
                             <hr>
                           </div>
                         </div>
@@ -208,7 +211,7 @@ catch(PDOException $e) {
         </div>
       </footer>
 
-      <form action="building.php" method="get" id="redirectform">
+      <form action="building_log.php" method="get" id="redirectform">
         <input type="hidden" name="building" value="">
       </form>
 

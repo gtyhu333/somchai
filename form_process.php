@@ -96,7 +96,7 @@ catch(PDOException $e) {
                                                       <th><center>คะแนน (ล่าสุด)</center></th>
                                                       <th><center>วันที่คำนวณ (ล่าสุด)</center></th>
                                                       <th><center>การจัดสรร</center></th>
-                                                      <th><center>ยกเลิกฟอร์ม</center></th>
+                                                      <th><center>จัดการฟอร์ม</center></th>
                                                     </thead>
                                                       <tbody>
                                                       <?php foreach ($requests as $request) : ?>
@@ -123,6 +123,11 @@ catch(PDOException $e) {
                                                           </td>
                                                           <td><center><?= $request['request_status'] ?></center></td>
                                                           <td><center>
+                                                            <?php if ($request['request_status'] != 'ยกเลิก' && $request['request_status'] != 'จัดสรร'): ?>
+                                                                <button class="btn btn-success" data-toggle="modal" data-target="#modalRoom<?= $request['StaffID'] ?>">
+                                                                  จัดสรร
+                                                                </button>
+                                                              <?php endif ?>
                                                             <form action="form_cancle.php" method="POST">
                                                               <input type="hidden" value="<?= $request['StaffID'] ?>" name="id">
                                                               <button class="btn btn-danger" type="submit">
@@ -131,6 +136,40 @@ catch(PDOException $e) {
                                                             </form>
                                                           </center></td>
                                                         </tr>
+                                                        <?php if ($request['request_status'] != 'ยกเลิก'): ?>
+                                                          <div id="modalRoom<?= $request['StaffID'] ?>" class="modal fade" role="dialog">
+                                                          <div class="modal-dialog">
+
+                                                            <!-- Modal content-->
+                                                            <div class="modal-content">
+                                                              <div class="modal-header">
+                                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                                <h4 class="modal-title">จัดสรรห้องพัก</h4>
+                                                              </div>
+                                                              <div class="modal-body">
+                                                                <form action="form_assign_room.php" method="post">
+                                                                  <div class="form-group" style="margin-bottom: 2rem">
+                                                                    <label for="newstatus">เลือกห้องที่ต้องการจัดสรรให้</label>
+                                                                    <select name="roomID" class="form-control">
+                                                                      <?php foreach (getAvailableRoomForRequest($request, $db) as $building => $rooms): ?>
+                                                                        <optgroup label="<?= getBuidlingName($building, $db) ?>">
+                                                                          <?php foreach ($rooms as $room): ?>
+                                                                            <option value="<?= $room['RoomID'] ?>">ห้อง <?= $room['RoomName'] ?></option>
+                                                                          <?php endforeach ?>
+                                                                        </optgroup>
+                                                                      <?php endforeach ?>
+                                                                    </select>
+                                                                    <input type="hidden" name="StaffID" value="<?= $request['StaffID']?>">
+                                                                  </div>
+                                                                  <button type="submit" class="btn btn-success">จัดสรร</button>
+                                                                  <button type="button" class="btn btn-default" data-dismiss="modal">ปิด</button>
+                                                                </form>
+                                                              </div>
+                                                            </div>
+
+                                                          </div>
+                                                        </div>
+                                                        <?php endif ?>
                                                       <?php endforeach; ?>
                                                     </tbody>
                                                 </table>

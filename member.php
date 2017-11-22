@@ -102,12 +102,12 @@ try {
     <div class="container">
 
         <div class="row">
-            <div class="box">
+            <div class="box" style="background-color: #fff; padding: 15px;">
 
                 <div class="row">
                     <div class="col-lg-12">
-                        <div class="panel panel-default">
-                            <div class="panel-body">
+                        <div class="">
+                            <div class="">
                                 <div class="table-responsive">
 
                                           <div class="col-lg-12">
@@ -117,7 +117,7 @@ try {
                                           </div>
 
                                             <form action="member.php" method="get" id="buildingform">
-                                            <div class="form-group">
+                                            <div class="form-group col-lg-12">
                                               <label>ชื่ออาคาร</label>
                                               <div class="row">
                                                 <div class="col-md-6">

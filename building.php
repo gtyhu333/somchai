@@ -120,11 +120,11 @@ catch(PDOException $e) {
     <div class="container">
 
         <div class="row">
-            <div class="box">
+            <div class="box" style="background-color: #fff">
                 <div class="row">
-                    <div class="col-lg-12">
-                        <div class="panel panel-default">
-                            <div class="panel-body">
+                    <div class="col-lg-12" style="padding: 30px">
+                        <div class="">
+                            <div class="">
                                 <div>
                                             <div class="form-group">
                                           <div class="col-lg-12">
@@ -203,8 +203,10 @@ catch(PDOException $e) {
                                                       <th><center>สถานะห้องพัก</center></th>
                                                       <th><center>ค่าเช่าห้องพัก</center></th>
                                                       <th><center>ค่าประกันของเสียหาย</center></th>
+                                                      <?php if ($_SESSION['user_type'] == 9): ?>      
                                                       <th><center>แก้ไขข้อมูล</center></th>
                                                       <th><center>ลบข้อมูล</center></th>
+                                                      <?php endif ?>
                                                     </thead>
                                                       <tbody>
                                                       <?php foreach ($result as $value) : ?>
@@ -239,6 +241,7 @@ catch(PDOException $e) {
                                                           <td class="<?= getBuildingTableClass($value['RoomStatus']) ?>"><center><?= $value['RoomStatus'] ?></center></td>
                                                           <td><center><?= number_format($value['RoomRate']) ?></center></td>
                                                           <td><center><?= number_format($value['InsurantRate']) ?></center></td>
+                                                          <?php if ($_SESSION['user_type'] == 9): ?>      
                                                           <td><center>
                                                               <a href="room_update_form.php?id=<?= $value['RoomID'] ?>" class="btn btn-primary" name="a">แก้ไข</a>
                                                           </center></td>
@@ -248,6 +251,7 @@ catch(PDOException $e) {
                                                               <button type="submit" class="btn btn-danger" name="button">ลบ</button>
                                                             </form>
                                                           </certer></td>
+                                                        <?php endif ?>
                                                         </tr>
                                                       <?php endforeach; ?>
                                                     </tbody>

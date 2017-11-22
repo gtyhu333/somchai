@@ -165,9 +165,9 @@ function getBill($userid, $year, $month, $db)
     <?php require 'admin_nav.php'; ?>
 
     <div class="container">
-      <div class="box">
-        <div class="panel panel-default">
-          <div class="panel-body">
+      <div class="box" style="background-color: #fff; padding: 30px;">
+        <div class="">
+          <div class="">
             <hr>
               <h2 class="intro-text text-center" style="color: #0080ff">
                 การจัดการยอดค้างชำระ

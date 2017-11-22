@@ -15,6 +15,9 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                   <li>
+                      <a href="index_admin.php">หน้าหลัก</a>
+                  </li>
+                  <li>
                       <a href="building.php">จัดการอาคารที่พัก</a>
                   </li>
                   <li>

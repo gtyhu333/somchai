@@ -70,11 +70,11 @@ catch(PDOException $e) {
     <div class="container">
 
         <div class="row">
-            <div class="box">
+            <div class="box" style="background-color: #fff">
                 <div class="row">
                     <div class="col-lg-12">
-                        <div class="panel panel-default">
-                            <div class="panel-body">
+                        <div class="">
+                            <div class="">
                                 <div class="table-responsive">
 
                                           <div class="col-lg-12">
@@ -130,11 +130,6 @@ catch(PDOException $e) {
                                                               <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#modal<?= $request['StaffID'] ?>">
                                                                 แก้ไข
                                                               </a>
-                                                              <?php if ($request['request_status'] != 'ยกเลิก' && $request['request_status'] != 'จัดสรร'): ?>
-                                                                <button class="btn btn-success" data-toggle="modal" data-target="#modalRoom<?= $request['StaffID'] ?>">
-                                                                  จัดสรร
-                                                                </button>
-                                                              <?php endif ?>
                                                           </center></td>
                                                         <td>  <center>
                                                             <form action="form_handle_delete.php" method="post">
