@@ -9,27 +9,27 @@ $range = [
 ];
 
 $mainSql = "
-SELECT staff.PName, staff.Name, staff.Surname, staff.RequestDate, t1.Score, t1.EvaluateDate 
+SELECT DISTINCT t1.StaffID, staff.PName, staff.Name, staff.Surname, staff.RequestDate, t1.Score, t1.EvaluateDate 
 FROM staff 
 LEFT JOIN (
-    SELECT DISTINCT score.StaffID, score.Score, score.EvaluateDate FROM score ORDER BY score.EvaluateDate DESC LIMIT 1
+    SELECT score.StaffID, score.Score, score.EvaluateDate FROM score ORDER BY score.EvaluateDate DESC
 ) as t1
 ON t1.StaffID = staff.StaffID 
 WHERE staff.request_status = 'ปกติ'
 ";
 
 try {
-  $stmt = $db->prepare("$mainSql AND `RequestDate` BETWEEN '{$range[1][0]}' AND '{$range[1][1]}';");
+  $stmt = $db->prepare("$mainSql AND `RequestDate` BETWEEN '{$range[1][0]}' AND '{$range[1][1]}' GROUP BY t1.StaffID;");
   $stmt->execute();
   $stmt->setFetchMode(PDO::FETCH_ASSOC);
   $requests1 = $stmt->fetchAll();
 
-  $stmt = $db->prepare("$mainSql AND `RequestDate` BETWEEN '{$range[2][0]}' AND '{$range[2][1]}';");
+  $stmt = $db->prepare("$mainSql AND `RequestDate` BETWEEN '{$range[2][0]}' AND '{$range[2][1]}' GROUP BY t1.StaffID;");
   $stmt->execute();
   $stmt->setFetchMode(PDO::FETCH_ASSOC);
   $requests2 = $stmt->fetchAll();
 
-  $stmt = $db->prepare("$mainSql AND `RequestDate` BETWEEN '{$range[3][0]}' AND '{$range[3][1]}';");
+  $stmt = $db->prepare("$mainSql AND `RequestDate` BETWEEN '{$range[3][0]}' AND '{$range[3][1]}' GROUP BY t1.StaffID;");
   $stmt->execute();
   $stmt->setFetchMode(PDO::FETCH_ASSOC);
   $requests3 = $stmt->fetchAll();
