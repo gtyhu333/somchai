@@ -181,7 +181,7 @@ $conn = null;
                                                 <div class="form-inline">
                                              <div class="form-group">
                                                  <label>สังกัด <font color ="red">*</font> </label>
-                                                 <select style="width:300px" class="form-control" name="fac">
+                                                 <select style="width:300px" class="form-control" name="fac" onchange="fetchdept(this.value)">
                                                    <?php foreach ($faculty as $faculty): ?>
                                                      <option value="<?=$faculty['FacID']?>"><?=$faculty['FacNameT']?></option>
                                                    <?php endforeach; ?>
@@ -191,9 +191,7 @@ $conn = null;
                                              <div class="form-group">
                                                  <label>ภาควิชา <font color ="red">*</font> </label>
                                                  <select style="width:200px" class="form-control" name="dept">
-                                                   <?php foreach ($department as $department): ?>
-                                                     <option value="<?=$department['DeptID']?>"><?=$department['DeptNameT']?></option>
-                                                   <?php endforeach; ?>
+                                                    <option value="">--- โปรดเลือกคณะ ---</option>
                                                  </select>
                                              </div>
                                             </div>
@@ -447,6 +445,16 @@ $conn = null;
       });
     }
 
+    function fetchdept(value) {
+      var url = "getdept.php?id=" + value;
+
+      $.get(url, function(response) {
+        $('select[name="dept"] option').remove();
+
+        $('select[name="dept"]').html(response);
+      });
+    }
+
     function changevalueflat(value) {
       if (value == '1') {
         $('select[name="building1"] option[value="5"]').hide();
@@ -463,6 +471,11 @@ $conn = null;
         $('select[name="building1"] option[value="1"]').hide();
       }
     }
+
+    $(document).ready(function () {
+      $('select[name="fac"]').change();
+      $('select[name="province1"]').change();
+    })
     </script>
 
 </body>
