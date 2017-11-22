@@ -15,6 +15,7 @@ if ($_SESSION['user_type'] != 1) {
 }
 
 $user_id = $_SESSION['copy_from'] ? $_SESSION['copy_from'] : $_SESSION['user_id'];
+$picPath = !file_exists(__DIR__ . '/userpic/' . $user_id . '.jpg') ? null : 'userpic/' . $user_id . '.jpg';
 
 try {
     $stmt = $db->prepare("SELECT * FROM v_resident WHERE UserID = :userid AND Status = '1'");
@@ -105,6 +106,7 @@ try {
                     <h2 class="intro-text text-center">ข้อมูลส่วนตัว
                     </h2>
                     <h3 class="intro-text text-center"><?= $user['Name'] ?></h3>
+                    <img src="<?= $picPath ?>" style="display: block; margin: 0 auto; height: 130px;">
                     <a class="text-center" href="edit_profile.php" style="display: block;"><b>แก้ไขข้อมูลส่วนตัว</b></a>
                     <hr>
                     <hr class="visible-xs">
