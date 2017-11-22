@@ -35,6 +35,51 @@ try {
     die();
 }
 
+// Address
+try {
+    $stmt = $db->prepare("SELECT * FROM addresses WHERE UserID = :userid LIMIT 1");
+    $stmt->bindParam(':userid', $_POST['userid']);
+    $stmt->execute();
+    $address = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$address) {
+        $stmt = $db->prepare("
+            INSERT INTO addresses (UserID, Address, CityID, DistrictID, ProvinceID, Zip) 
+            VALUES (:userid, :address, :cityid, :districtid, :provinceid, :zip)
+        ");
+
+        $address = htmlspecialchars(trim($_POST['address']));
+
+        $stmt->bindParam(':userid', $_POST['userid']);
+        $stmt->bindParam(':address', $address);
+        $stmt->bindParam(':cityid', $_POST['city']);
+        $stmt->bindParam(':districtid', $_POST['district']);
+        $stmt->bindParam(':provinceid', $_POST['province']);
+        $stmt->bindParam(':zip', $_POST['zip']);
+        $stmt->execute();
+
+    } else {
+        $stmt = $db->prepare("
+            UPDATE addresses SET Address = :address, CityID = :cityid, DistrictID = :districtid, 
+            ProvinceID = :provinceid, zip = :zip WHERE UserID = :userid
+        ");
+
+        $address = htmlspecialchars(trim($_POST['address']));
+
+        $stmt->bindParam(':userid', $_POST['userid']);
+        $stmt->bindParam(':address', $address);
+        $stmt->bindParam(':cityid', $_POST['city']);
+        $stmt->bindParam(':districtid', $_POST['district']);
+        $stmt->bindParam(':provinceid', $_POST['province']);
+        $stmt->bindParam(':zip', $_POST['zip']);
+        $stmt->execute();
+    }
+} catch (Exception $e) {
+    echo "Error: " . $e->getMessage();
+    $db->rollback();
+    die();
+}
+
 $db->commit();
 
 header('Location: edit_profile.php');
