@@ -4,7 +4,7 @@ require 'DBConnect.php';
 session_start();
 $user_id = $_SESSION['copy_from'] ? $_SESSION['copy_from'] : $_SESSION['user_id'];
 
-$picPath = !file_exists(__DIR__ . '/userpic/' . $user_id . '.jpg') ? null : '/userpic/' . $user_id . '.jpg';
+$picPath = !file_exists(__DIR__ . '/userpic/' . $user_id . '.jpg') ? null : 'userpic/' . $user_id . '.jpg';
 
 try {
     $stmt = $db->prepare("SELECT * FROM member WHERE UserID = :userid");
