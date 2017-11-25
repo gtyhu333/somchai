@@ -13,7 +13,7 @@ if (!in_array($_SESSION['user_type'], [2, 3, 4, 5, 9])) {
   die();
 }
 
-if ($_SESSION['user_type'] == 9) {
+if ($_SESSION['user_type'] == 9  || $_SESSION['user_type'] == 5) {
   $buildingID = isset($_GET['building']) ? $_GET['building'] : 1;
 } else {
   $buildingID = $_SESSION['building_id'];
@@ -134,7 +134,7 @@ catch(PDOException $e) {
                                          </div>
                                             </div>
                                           </div>
-                                          <?php if ($_SESSION['user_type'] == 9): ?>
+                                          <?php if ($_SESSION['user_type'] == 9 || $_SESSION['user_type'] == 5): ?>
                                           <label>ชื่ออาคาร</label>
                                               <div class="row">
                                                 <div class="col-md-6">
@@ -146,7 +146,8 @@ catch(PDOException $e) {
 
                                                 </div>
 
-
+                                                <?php if ($_SESSION['user_type'] == 9): ?>
+                                                  
                                                 <div class="col-md-6">
                                                   <form action="building_update_form.php" method="GET" style="display: inline-block;">
                                                     <input type="hidden" name="id" value="1">
@@ -168,6 +169,8 @@ catch(PDOException $e) {
                                                   <input type="hidden" name="id" value="1">
                                                   <button class="btn btn-info" type="submit">เพิ่มห้องพัก</button>
                                                 </form>
+                                              <?php endif ?>
+
                                         </div>
                                         <?php endif ?>
                                         <div class="panel-body">

@@ -25,7 +25,7 @@
                   <a href="building.php">สถานะหอพักในสังกัด</a>
                 </li>
                 <li>
-                  <a href="building_logs.php">ความเคลื่อนไหวในหอพักในสังกัด</a>
+                  <a href="building_log.php">ความเคลื่อนไหวในหอพักในสังกัด</a>
                 </li>
                 <li>
                   <a href="logout.php">ออกจากระบบ</a>

@@ -13,7 +13,7 @@ if (!in_array($_SESSION['user_type'], [2, 3, 4, 5, 9])) {
   die();
 }
 
-if ($_SESSION['user_type'] == 9) {
+if ($_SESSION['user_type'] == 9 || $_SESSION['user_type'] == 5) {
   $buildingID = isset($_GET['building']) ? $_GET['building'] : 1;
 } else {
   $buildingID = $_SESSION['building_id'];
@@ -123,10 +123,10 @@ catch(PDOException $e) {
                           </div>
                         </div>
                       </div>
-                      <?php if ($_SESSION['user_type'] == 9): ?>
-                        <label>ชื่ออาคาร</label>
-                        <div class="row">
+                      <?php if ($_SESSION['user_type'] == 9 || $_SESSION['user_type'] == 5): ?>
+                        <div class="row" style="margin: 0">
                           <div class="col-md-6">
+                            <label>ชื่ออาคาร</label>
                             <select class="form-control" id="selectid" onchange="changevalue(this.value);">
                               <?php foreach ($resultBuilding as $value): ?>
                                 <option value="<?= $value['BuildingID'] ?>" <?= $value['BuildingID'] == $buildingID ? ' selected' : '' ?>><?= $value['BuildingName'] ?></option>

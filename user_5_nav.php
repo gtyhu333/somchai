@@ -22,10 +22,10 @@
                     <a href="form_handle_flatmanager.php">จัดการแบบฟอร์ม</a>
                 </li>
                 <li>
-                  <a href="building.php">สถานะหอพักในสังกัด</a>
+                  <a href="building.php">สถานะหอพักทั้งหมด</a>
                 </li>
                 <li>
-                  <a href="building_log.php">ความเคลื่อนไหวในหอพักในสังกัด</a>
+                  <a href="building_log.php">ความเคลื่อนไหวในหอพักทั้งหมด</a>
                 </li>
                 <li>
                   <a href="logout.php">ออกจากระบบ</a>
