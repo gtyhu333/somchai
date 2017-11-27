@@ -31,6 +31,7 @@
                           <li role="separator" class="divider"></li>
                           <li><a href="building_water_bill.php">จัดการค่าน้ำ</a></li>
                           <li><a href="building_electric_bill.php">จัดการค่าไฟ</a></li>
+                          <li><a href="expense_paper.php">พิมพ์ใบจ่ายเงิน</a></li>
                         </ul>
                       </div>
                   </li>
