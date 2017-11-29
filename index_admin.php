@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <?php
+require 'DBConnect.php';
 session_start();
 if (!isset($_SESSION["user_id"])){
   header('Location: login.php');
@@ -58,7 +59,12 @@ if ($_SESSION['user_type'] != 9) {
                 <div class="col-lg-12">
                   <div class="col-lg-12">
                 <hr>
-                <font color ="#0080ff"><h2 class="intro-text text-center">ข้อมูลส่วนตัว</h2></font>
+                <font color ="#0080ff">
+                    <!-- <h2 class="intro-text text-center">ข้อมูลส่วนตัว</h2> -->
+                    <h2 class="intro-text text-center" style="font-size: 1em">
+                        <a href="list_login.php">ดูรายชื่อผู้ใช้ที่ Login</a>
+                    </h2>
+                </font>
                 <hr>
                  </div>
 

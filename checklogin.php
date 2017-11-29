@@ -12,6 +12,16 @@ try {
   if ($result) {
     if (password_verify($pass,$result->Passwd)) {
       session_start();
+      $stmt = $db->prepare("SELECT * FROM member WHERE CopyFrom = '$result->UserID'");
+      $stmt->execute();
+      $altAccounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+      $_SESSION["selected_user_id"] = $result->UserID;
+      
+      if (count($altAccounts) != 0) {
+        header('Location: choose_account.php');
+        exit();
+      }
+
       $_SESSION["user_id"] = $result->UserID;
       $_SESSION["user_type"] = $result->UserType;
       $_SESSION["building_id"] = $result->BuildingID;
