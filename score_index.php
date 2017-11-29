@@ -90,7 +90,7 @@ catch(PDOException $e) {
                   <a href="index.php">หน้าหลัก</a>
                 </li>
                 <li>
-                 <a href="form_request.php">  <u><b>แบบฟอร์มขอเข้าพัก</b></u></a>
+                 <a href="form_request.php">  <u><b>ยื่นแบบฟอร์มขอเข้าพัก</b></u></a>
                </li>
                <li>
                 <a href="building_normal.php">สถานะหอพักบุคลากร</a>
@@ -120,9 +120,6 @@ catch(PDOException $e) {
               <table class="table table-bordered">
                 <thead>
                   <tr>
-                    <th colspan="4" style="background-color: #f0f0f0">รอบที่ 1</th>
-                  </tr>
-                  <tr>
                     <th>ชื่อ - สกุล</th>
                     <th>วันที่ยื่นแบบฟอร์ม</th>
                     <th>คะแนนล่าสุด</th>
@@ -140,17 +137,9 @@ catch(PDOException $e) {
                   </tr>
                   <?php endforeach ?>
                   <?php else: ?>
-                  <tr>
-                    <td colspan="4">ไม่มีข้อมูล</td>
-                  </tr>
                   <?php endif ?>
                 </tbody>
 
-                <thead>
-                  <tr>
-                    <th colspan="4" style="background-color: #f0f0f0">รอบที่ 2</th>
-                  </tr>
-                </thead>
                 <tbody>
                   <?php if (!empty($requests2)): ?>
                   <?php foreach ($requests1 as $request): ?>
@@ -162,17 +151,9 @@ catch(PDOException $e) {
                   </tr>
                   <?php endforeach ?>
                   <?php else: ?>
-                  <tr>
-                    <td colspan="4">ไม่มีข้อมูล</td>
-                  </tr>
                   <?php endif ?>
                 </tbody>
 
-                <thead>
-                  <tr>
-                    <th colspan="4" style="background-color: #f0f0f0">รอบที่ 3</th>
-                  </tr>
-                </thead>
                 <tbody>
                   <?php if (!empty($requests3)): ?>
                   <?php foreach ($requests1 as $request): ?>
@@ -184,9 +165,6 @@ catch(PDOException $e) {
                   </tr>
                   <?php endforeach ?>
                   <?php else: ?>
-                  <tr>
-                    <td colspan="4">ไม่มีข้อมูล</td>
-                  </tr>
                   <?php endif ?>
                 </tbody>
               </table>
