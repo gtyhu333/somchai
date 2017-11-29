@@ -4,7 +4,7 @@ include 'DBConnect.php';
 
 function process($request)
 {
-    global $db;
+    global $db, $_POST;
     $score = 0;
 
     $score += $postionScore = postionScore($request['PositionID'], $db);
@@ -27,7 +27,13 @@ function process($request)
     $score += $request['ChildrenCount'];
     $maritalScore += $request['ChildrenCount'];
 
-    $interval = date_diff(new DateTime($request['EmployDate']), new DateTime("now"));
+    $now = new DateTime("now");
+    $d = $now->format('d');
+    $m = $now->format('m');
+
+    $now->setDate($_POST['year'], $m, $d);
+
+    $interval = date_diff(new DateTime($request['EmployDate']), $now);
 
     if ($interval->m > 6) {
         $employScore = $interval->y + 1;

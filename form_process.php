@@ -180,10 +180,16 @@ catch(PDOException $e) {
                                                   <div class="col-md-12" style="display: flex;">
                                                     <form action="score_process.php" method="POST" style="display: inline-block; margin: 0 auto;">
                                                     <label>เลือกรอบสำหรับการประมวลผล</label>
-                                                    <select class="form-control" name="range" onchange="changevalue(this.value);">
+                                                    <select class="form-control" name="range">
                                                       <option value="1">ม.ค. - เม.ษ.</option>
                                                       <option value="2">พ.ค. - ส.ค.</option>
                                                       <option value="3">ก.ย. - ธ.ค.</option>
+                                                    </select> <br>
+                                                    <label>เลือกปีที่จะใช้ในการประมวลผล</label>
+                                                    <select class="form-control" name="year">
+                                                    <?php foreach (range(date('Y') - 3, date('Y') + 3) as $year): ?>
+                                                    <option value="<?= $year ?>"<?= $year == date('Y') ? ' selected' : '' ?>><?= $year + 543 ?></option>
+                                                    <?php endforeach ?>
                                                     </select>
                                                     <br>
                                                     <button type="submit" class="btn btn-primary">  ทำการประมวลผลคะแนน</button>  &nbsp;&nbsp;
