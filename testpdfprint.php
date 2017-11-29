@@ -65,12 +65,37 @@ ob_start();
 
     <p style="font-size: 1.75rem; padding: 0 5px;">
         &nbsp;&nbsp;&nbsp;&nbsp;
-        ข้าพเจ้า <b><?= $_POST['receiptname'] ?></b> 
+        ข้าพเจ้า <b><?= $_POST['receiptname'] ?></b>
+
+        <?php if ($_POST['street'] != ""): ?>
         ที่อยู่ <b><?= $_POST['street'] ?></b> 
-        ตำบล <b><?= districtName($_POST['tambon'], $db) ?></b> 
+        <?php else: ?>
+        ที่อยู่ <b>____________________</b> 
+        <?php endif ?>
+        
+        <?php if ($_POST['tambon'] != ""): ?>
+        ตำบล <b><?= districtName($_POST['tambon'], $db) ?></b>
+        <?php else: ?>
+        ตำบล <b>____________________</b>
+        <?php endif ?>
+        
+        <?php if ($_POST['amphoe'] != ""): ?>
         อำเภอ <b><?= cityName($_POST['amphoe'], $db) ?></b> <br>
-        จังหวัด <b><?= provinceName($_POST['province'], $db) ?>, <?= $_POST['zip'] ?></b> 
+        <?php else: ?>
+        อำเภอ <b>____________________</b> <br>
+        <?php endif ?>
+        
+        <?php if ($_POST['province'] != "" && $_POST['zip'] != ""): ?>
+        จังหวัด <b><?= provinceName($_POST['province'], $db) ?>, <?= $_POST['zip'] ?></b>
+        <?php else: ?>
+        จังหวัด <b>____________________</b>
+        <?php endif ?>
+        
+        <?php if ($_POST['phone'] != ""): ?>
         โทร. <b><?= $_POST['phone'] ?></b>
+        <?php else: ?>
+        โทร. <b>____________________</b>
+        <?php endif ?>
     </p>
 
     <p style="font-size: 1.75rem; padding: 0 5px;">
@@ -86,15 +111,28 @@ ob_start();
             </tr>
         </thead>
         <tbody>
-                <?php foreach ($_POST['name'] as $index => $name): ?>
-                <tr>
-                    <td><?= $name ?></td>
-                    <td><?= number_format($_POST['price'][$index]) ?></td>
-                </tr>
-                <?php endforeach ?>
+            <?php $count = 1; ?>
+            <?php foreach ($_POST['name'] as $index => $name): ?>
             <tr>
-                <td style="text-align: right">
-                    <b>รวมเป็นเงิน</b>
+                <td><?= $name ?></td>
+                <td><?= number_format($_POST['price'][$index]) ?></td>
+                <?php $count++ ?>
+            </tr>
+            <?php endforeach ?>
+            <?php if ($count < 7): ?>
+            <?php foreach (range(1, $count - 7) as $_): ?>
+            <tr>
+                <td>-</td>
+                <td>-</td>
+            </tr>
+            <?php endforeach ?>
+            <?php endif ?>
+            <tr>
+                <td style="text-align: right;">
+                    จำนวนเงิน
+                    <b>
+                        (<?= Convert(array_sum($_POST['price'])) ?>)
+                    </b>
                 </td>
                 <td>
                     <?=  

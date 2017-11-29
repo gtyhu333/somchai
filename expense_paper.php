@@ -137,7 +137,7 @@ $months = [
                     <div class="row">
                       <div class="col-lg-5">
                         <label for="name">ที่อยู่ผู้รับเงิน</label>
-                        <input type="text" class="form-control" name="street" required>
+                        <input type="text" class="form-control" name="street">
                       </div>
                     </div>
                   </div>
@@ -147,6 +147,7 @@ $months = [
                       <div class="col-lg-5">
                         <label for="name">จังหวัด</label>
                         <select class="form-control" name="province" onchange="fetchcity(this.value);">
+                          <option value="">---- โปรดเลือกจังหวัด ----</option>
                           <?php foreach ($provinces as $province): ?>
                             <option value="<?=$province['ProvinceID']?>"><?=$province['ProvinceNameT']?></option>
                           <?php endforeach; ?>
@@ -181,7 +182,7 @@ $months = [
                     <div class="row">
                       <div class="col-lg-5">
                         <label for="name">รหัสไปรษณีย์</label>
-                        <input type="text" class="form-control" name="zip" required>
+                        <input type="text" class="form-control" name="zip">
                       </div>
                     </div>
                   </div>
@@ -190,7 +191,7 @@ $months = [
                     <div class="row">
                       <div class="col-lg-5">
                         <label for="name">โทรศัพท์</label>
-                        <input type="text" class="form-control" name="phone" required>
+                        <input type="text" class="form-control" name="phone">
                       </div>
                     </div>
                   </div>
@@ -211,10 +212,10 @@ $months = [
                       <tr>
                         <td>
                           <input type="text" class="form-control" list="list1" name="name[]" style="width: 90%"
-                          oninput="getPrice(this)">
+                          oninput="getPrice(this)" required>
                         </td>
                         <td class="pricetr">
-                          <input type="text" class="form-control" value="" name="price[]" style="width: 90%">
+                          <input type="text" class="form-control" value="" name="price[]" style="width: 90%" required>
                         </td>
                         <td>
                           <button type="button" class="btn btn-default" 
@@ -309,6 +310,7 @@ $months = [
           }
 
           function fetchcity(value) {
+            if (value == "") { return; }
             var url = "getcity.php?id=" + value;
 
             $.get(url, function(response) {
