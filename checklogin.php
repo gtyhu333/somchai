@@ -12,6 +12,11 @@ try {
   if ($result) {
     if (password_verify($pass,$result->Passwd)) {
       session_start();
+      
+      if ($result->CopyFrom) {
+        $result->UserID = $result->CopyFrom;
+      }
+
       $stmt = $db->prepare("SELECT * FROM member WHERE CopyFrom = '$result->UserID'");
       $stmt->execute();
       $altAccounts = $stmt->fetchAll(PDO::FETCH_ASSOC);

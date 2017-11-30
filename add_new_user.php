@@ -2,6 +2,10 @@
 
 require 'DBConnect.php';
 
+function generateRandomString($length = 10) {
+  return substr(str_shuffle(str_repeat($x='0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil($length/strlen($x)) )),1,$length);
+}
+
 session_start();
 if (!isset($_SESSION["user_id"])){
   header('Location: login.php');
@@ -39,10 +43,11 @@ try {
   $sql = "UPDATE `tmp` SET `UserID` = 0, `UserLogin` = :userlogin, `Passwd` = :passwd, `UserType` = :usertype, `CopyFrom` = :userid";
   $stmt = $db->prepare($sql);
   $pass = password_hash($_POST['password'], PASSWORD_DEFAULT);
+  $username = generateRandomString(8);
 
   $stmt->bindParam(':userid', $_POST['userid']);
-  $stmt->bindParam(':userlogin', $_POST['username']);
-  $stmt->bindParam(':passwd', $pass);
+  $stmt->bindParam(':userlogin', $username);
+  $stmt->bindParam(':passwd', password_hash($username));
   $stmt->bindParam(':usertype', $_POST['usertype']);
 
   $stmt->execute();
@@ -96,5 +101,5 @@ $db->commit();
 
 // redirect back
 redirect:
-header('Location: member.php');
+header('Location: ' . $_SERVER['HTTP_REFERER']);
 exit();

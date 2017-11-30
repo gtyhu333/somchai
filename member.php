@@ -163,7 +163,7 @@ try {
                                                           <td><center><?= $resident['Faculty'] ?></center></td>
 
                                                           <td><center>
-                                                              <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#modal<?= $resident['UserID'] ?>">
+                                                              <a href="edit_user.php?id=<?= $resident['UserID'] ?>" class="btn btn-primary">
                                                                 เพิ่ม / แก้ไข
                                                               </a>
                                                           </center></td>

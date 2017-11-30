@@ -9,11 +9,11 @@ if (!isset($_SESSION['selected_user_id'])) {
 }
 
 $user_id = $_SESSION['selected_user_id'];
-unset($_SESSION['selected_user_id']);
 
 $stmt = $db->prepare("SELECT * FROM member WHERE CopyFrom = '$user_id' OR UserID = '$user_id' ORDER BY UserType ASC");
 $stmt->execute();
 $altAccounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 ?>
 <!DOCTYPE html>
 <html lang="en">

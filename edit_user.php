@@ -13,12 +13,27 @@ if ($_SESSION['user_type'] != 9) {
   die();
 }
 
+$user_id = $_GET['id'];
+
 try {
   $stmt = $db->prepare('SELECT * FROM `member` WHERE `UserID` = :userid OR `CopyFrom` = :userid2');
   $stmt->bindParam(':userid', $_GET['id']);
   $stmt->bindParam(':userid2', $_GET['id']);
   $stmt->execute();
   $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+  $stmt = $db->prepare("
+SELECT * FROM `allvars` WHERE 
+`allvars`.`FieldName` = 'UserType' AND 
+`allvars`.`FieldCode` != 9 AND
+`allvars`.`FieldCode` != 6 AND
+`allvars`.`FieldCode` NOT IN 
+(SELECT `member`.`UserType` FROM `member` WHERE `member`.`UserID` = :id OR `member`.`CopyFrom` = :id2)
+");
+  $stmt->bindParam(':id', $_GET['id']);
+  $stmt->bindParam(':id2', $_GET['id']);
+  $stmt->execute();
+  $availableRoles = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 } catch(PDOException $e) {
   echo "Error: " . $e->getMessage();
@@ -87,7 +102,7 @@ function getUserTypeName($id) {
     <?php require 'admin_nav.php'; ?>
 
     <div class="container">
-      <div class="box">
+      <div class="box" style="background: #fff">
         <div class="col-lg-12">
           <hr>
           <h2 class="intro-text text-center" style="color: #0080ff">แก้ไข User สมาชิก<br><br> <a href="member.php">กลับ</a></h2>
@@ -111,11 +126,37 @@ function getUserTypeName($id) {
                   <td>
                     <button class="btn btn-primary" onclick="showModal(event, <?= $user['UserID'] ?>)">แก้ไข</button>
                     <?php if ($user['CopyFrom']): ?>
-                    <form action="delete_user.php" method="POST" style="display: inline;">
+                    <form action="delete_user.php" method="POST" style="display: inline;" onsubmit="return confirm('ต้องการลบ User นี้หรือไม่')">
                       <input type="hidden" name="UserID" value="<?= $user['UserID'] ?>">
                       <button type="submit" class="btn btn-danger">ลบ</button>
                     </form>
                     <?php endif ?>
+                  </td>
+                </tr>
+              <?php endforeach ?>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-lg-12">
+            <h4>สิทธิ์ที่สามารถเพิ่มได้</h4>
+            <table class="table table-bordered">
+              <thead>
+                <th>ประเภท</th>
+                <th>เพิ่ม</th>
+              </thead>
+              <tbody>
+              <?php foreach ($availableRoles as $role): ?>
+                <tr>
+                  <td><?= $role['ValueT'] ?></td>
+                  <td>
+                    <form action="add_new_user.php" method="POST" style="display: inline;" onsubmit="return confirm('ต้องการเพิ่มสิทธิ์นี้หรือไม่')">
+                      <input type="hidden" name="userid" value="<?= $user_id ?>">
+                      <input type="hidden" name="usertype" value="<?= $role['FieldCode'] ?>">
+                      <button type="submit" class="btn btn-default">เพิ่ม</button>
+                    </form>
                   </td>
                 </tr>
               <?php endforeach ?>

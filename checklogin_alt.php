@@ -4,6 +4,8 @@ session_start();
 
 $user_id = $_POST['user_id'];
 
+unset($_SESSION['selected_user_id']);
+
 try {
   $stm = $db->prepare("SELECT * From member WHERE UserID = '$user_id';");
   $stm->execute();
