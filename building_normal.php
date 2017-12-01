@@ -89,10 +89,10 @@ catch(PDOException $e) {
                       <a href="index.php">หน้าหลัก</a>
                   </li>
                     <li>
-                       <a href="form_request.php">  <u><b>ยื่นแบบฟอร์มขอเข้าพัก</b></u></a>
+                        <a href="building_normal.php">สถานะหอพักบุคลากร</a>
                     </li>
                     <li>
-                        <a href="building_normal.php">สถานะหอพักบุคลากร</a>
+                       <a href="form_request.php">  <u><b>ยื่นแบบฟอร์มขอเข้าพัก</b></u></a>
                     </li>
                     <li>
                         <a href="login.php">เข้าสู่ระบบ</a>

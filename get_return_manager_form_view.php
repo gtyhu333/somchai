@@ -1,6 +1,7 @@
 <?php
-
-require 'DBconnect.php';
+if (!isset($db)) {
+    require 'DBconnect.php';
+}
 
 $sql = "SELECT * FROM `return_form_manager` INNER JOIN `member` 
 ON `return_form_manager`.`submitted_user` = `member`.`UserID` 

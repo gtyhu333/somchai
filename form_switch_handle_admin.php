@@ -14,7 +14,7 @@ if ($_SESSION['user_type'] != 9) {
 }
 
 try {
-  $sql = "SELECT * FROM switch_form";
+  $sql = "SELECT * FROM switch_form ORDER BY CreateDate DESC";
 
   // if (isset($_GET['building']) && $_GET['building'] != 'all') {
   //   $sql .= " WHERE BuildingID = {$_GET['building']}";
@@ -126,6 +126,7 @@ try {
                     <th>ผู้แจ้ง</th>
                     <th>วันที่ขอสลับห้อง</th>
                     <th>สาเหตุ</th>
+                    <th>วันที่แจ้ง</th>
                     <th>สถานะ</th>
                     <th>จัดการข้อมูล</th>
                   </thead>
@@ -140,6 +141,7 @@ try {
                       <td><?= $info['Name'] ?></td>
                       <td><?= sqlDateToThaiDate($form['SwitchingDate']) ?></td>
                       <td><?= $form['Cause'] ?></td>
+                      <td><?= sqlDateToThaiDate($form['CreateDate']) ?></td>
                       <td>
                         <?php if ($form['Status'] == 1): ?>
                           <span class="text-danger">ยังไม่อนุมัติ</span>

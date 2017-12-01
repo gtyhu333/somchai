@@ -20,13 +20,14 @@ try {
   $userInfo = $stmt->fetch(PDO::FETCH_ASSOC);
 
   $sql = "
-  SELECT `return_form`.`ReturnID`,`v_resident`.`Name`, `v_resident`.`Building`,`v_resident`.`BuildingID`,
+  SELECT `return_form`.`ReturnID`,`return_form`.`CreateDate`, `v_resident`.`Name`, `v_resident`.`Building`,`v_resident`.`BuildingID`,
   `v_resident`.`RoomID`,`return_form`.`ReturnDate`,`return_form`.`Cause`,`return_form`.`Status`, 
   `return_form_checker`.`submitted` as `checker_submitted`, `return_form_manager`.`submitted` as `manager_submitted`
   FROM return_form
   INNER JOIN `v_resident` ON `return_form`.`ResidentID` = `v_resident`.`ResidentID` 
   INNER JOIN `return_form_checker` ON `return_form`.`ReturnID` = `return_form_checker`.`return_form_id` 
   INNER JOIN `return_form_manager` ON `return_form`.`ReturnID` = `return_form_manager`.`return_form_id`
+  ORDER BY `return_form`.`CreateDate` DESC
 ";
   $sql .= " WHERE BuildingID = {$userInfo['BuildingID']}";
 
@@ -117,6 +118,7 @@ try {
                     <th>ผู้แจ้ง</th>
                     <th>วันที่ขอคืนห้อง</th>
                     <th>สาเหตุ</th>
+                    <th>วันที่แจ้ง</th>
                     <th>สถานะ</th>
                   </thead>
                   <tbody>
@@ -127,6 +129,7 @@ try {
                       <td><?= $form['Name'] ?></td>
                       <td><?= sqlDateToThaiDate($form['ReturnDate']) ?></td>
                       <td><?= $form['Cause'] ?></td>
+                      <td><?= sqlDateToThaiDate($form['CreateDate']) ?></td>
                       <td>
                         <?php if ($form['Status'] == 1): ?>
                           <span class="text-danger">ยังไม่อนุมัติ</span>
@@ -139,19 +142,21 @@ try {
                         <?php endif ?>
                         <br>
                         <?php if (!!$form['checker_submitted']): ?>
-                          <span class="text-success">อนุกรรมการอนุมัติแล้ว<a href="#" onclick="showCheckerForm(event, <?= $form['ReturnID'] ?>)">ดูฟอร์ม</a></span>
+                          <span class="text-success">อนุกรรมการอนุมัติแล้ว<!-- <a href="#" onclick="showCheckerForm(event, <?= $form['ReturnID'] ?>)">ดูฟอร์ม</a> --></span>
                         <?php else: ?>
                           <span class="text-danger">อนุกรรมการยังไม่อนุมัติ</span>
                         <?php endif ?>
                         <br>
                         <?php if (!!$form['manager_submitted']): ?>
-                          <span class="text-success">ประธานอนุกรรมการอนุมัติแล้ว <a href="#" onclick="showManagerForm(event, <?= $form['ReturnID'] ?>)">ดูฟอร์ม</a></span>
+                          <span class="text-success">ประธานอนุกรรมการอนุมัติแล้ว <!-- <a href="#" onclick="showManagerForm(event, <?= $form['ReturnID'] ?>)">ดูฟอร์ม</a> --></span>
                         <?php else: ?>
                           <span class="text-danger">ประธานอนุกรรมการยังไม่อนุมัติ</span>
                         <?php endif ?>
                         <br>
                         <?php if (! !!$form['manager_submitted']): ?>
                           <a href="#" onclick="showModal(event, <?= $form['ReturnID'] ?>)">กรอกแบบฟอร์ม</a>
+                        <?php else: ?>
+                          <a href="#" onclick="showForm(event, <?= $form['ReturnID'] ?>)">ดูแบบฟอร์ม</a>
                         <?php endif ?>
                       </td>
                     </tr>
@@ -194,6 +199,25 @@ try {
           </div>
           <div class="modal-body">
             <div class="flatcheckermodal-content">
+
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">ปิด</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div>
+
+    <div class="modal fade" tabindex="-1" role="dialog" id="formmodal">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">แบบฟอร์มขอคืนห้อง</h4>
+          </div>
+          <div class="modal-body">
+            <div class="formmodal-content">
 
             </div>
           </div>
@@ -263,6 +287,19 @@ try {
         $('.flatcheckermodal-content').html(response);
 
         $('#flatcheckermodal').modal('show');
+      });
+    }
+
+    function showForm(event, id) {
+      event.preventDefault();
+
+      var url = "get_return_form_view.php?id=" + id;
+
+      $.get(url, function(response) {
+        $('#formmodal .formmodal-content').html('');
+        $('#formmodal .formmodal-content').html(response);
+
+        $('#formmodal').modal('show');
       });
     }
     </script>

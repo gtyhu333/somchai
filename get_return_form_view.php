@@ -54,46 +54,20 @@ $result = $stmt->fetch();
 
     <hr>
 
-    <label>ส่วน : ความเห็นของอนุกรรมการประจำอาคาร</label>
-    <form action="form_return_handle_checker.php" method="POST">
-        <input type="hidden" name="return_form_id" value="<?= $result['ReturnID'] ?>">
-        <div class="checkbox">
-            <label><input type="checkbox" name="check_1"> สภาพห้องเรียบร้อย</label>
-        </div>
-        <div class="checkbox">
-            <label><input type="checkbox" name="check_2"> ครุภัณฑ์ครบถ้วนและใช้การได้ดี เห็นควรคืนค่าประกัน ค่าเสียหาย ค่ามัดจำ</label>
-        </div>
-        <div class="checkbox">
-            <label><input type="checkbox" name="check_3" id="check_3"> สภาพห้องไม่เรียบร้อย วัสดุ อุปกรณ์ครุภัณฑ์มีการชำรุด สึกหรอ จำเป็นต้องปรับปรุง ซ่อมแซม หรือซื้อทดแทนของเดิม ดังนี้</label>
-        </div>
+    <?php require 'get_return_manager_form_view.php' ?>
+    
+    <hr>
 
-        <div class="form-group">
-            <textarea name="check_3_comment" cols="30" rows="5" class="form-control" readonly></textarea>
-        </div>
-
-        <div class="form-horizontal">
-            <div class="form-group">
-                <label class="col-sm-3 control-label" style="text-align: left">ประมาณรายจ่าย</label>
-                <div class="col-sm-6 input-group">
-                    <input type="number" class="form-control" name="cost">
-                    <div class="input-group-addon">บาท</div>
-                </div>
-            </div>
-        </div>
-
-        <button type="submit" class="btn btn-primary">กรอกฟอร์ม</button>
-
-        <hr>
-        <?php require 'get_return_manager_form_view.php' ?>
-    </form>
+    <?php require 'get_return_checker_form_view.php' ?>
 </div>
 
 <script>
-$('#check_3').on('change', function () {
+$('#check_1').on('change', function () {
     if ($(this).is(':checked')) {
-        $('textarea[name="check_3_comment"]').attr("readonly", false);
+        $('#cost').attr("readonly", false);
     } else {
-        $('textarea[name="check_3_comment"]').attr("readonly", true);
+        $('#cost').attr("readonly", true);
     }
 });
 </script>
+

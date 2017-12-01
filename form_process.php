@@ -154,7 +154,7 @@ catch(PDOException $e) {
                                                                       <?php foreach (getAvailableRoomForRequest($request, $db) as $building => $rooms): ?>
                                                                         <optgroup label="<?= getBuidlingName($building, $db) ?>">
                                                                           <?php foreach ($rooms as $room): ?>
-                                                                            <option value="<?= $room['RoomID'] ?>">ห้อง <?= $room['RoomName'] ?></option>
+                                                                            <option value="<?= $room['RoomID'] ?>">ห้อง <?= $room['RoomName'] ?> (<?= getRoomTypeName($room['RoomType'], $db) ?>)</option>
                                                                           <?php endforeach ?>
                                                                         </optgroup>
                                                                       <?php endforeach ?>

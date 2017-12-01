@@ -68,33 +68,33 @@ catch(PDOException $e) {
                 <li>
                   <a href="index.php">หน้าหลัก</a>
                 </li>
-                <li>
-                 <a href="form_request.php">  <u><b>ยื่นแบบฟอร์มขอเข้าพัก</b></u></a>
-               </li>
                <li>
                 <a href="building_normal.php">สถานะหอพักบุคลากร</a>
               </li>
               <li>
-                <a href="login.php">เข้าสู่ระบบ</a>
-              </li>
-            </ul>
-          </div>
-          <!-- /.navbar-collapse -->
+               <a href="form_request.php">  <u><b>ยื่นแบบฟอร์มขอเข้าพัก</b></u></a>
+             </li>
+             <li>
+              <a href="login.php">เข้าสู่ระบบ</a>
+            </li>
+          </ul>
         </div>
-        <!-- /.container -->
-      </nav>
+        <!-- /.navbar-collapse -->
+      </div>
+      <!-- /.container -->
+    </nav>
 
-      <div class="container">
-        <div class="box" style="background-color: #fff">
-          <div class="row">
-            <div class="col-lg-12">
-              <h4 class="text-center" style="color: hsl(211, 96%, 54%)">
-                ประกาศข่าวสารทั้งหมดจากหอพักบุคลากรมหาวิทยาลัยอุบลราชธานี
-              </h4>
-            </div>
+    <div class="container">
+      <div class="box" style="background-color: #fff">
+        <div class="row">
+          <div class="col-lg-12">
+            <h4 class="text-center" style="color: hsl(211, 96%, 54%)">
+              ประกาศข่าวสารทั้งหมดจากหอพักบุคลากรมหาวิทยาลัยอุบลราชธานี
+            </h4>
           </div>
+        </div>
 
-          <?php foreach ($news as $new): ?>
+        <?php foreach ($news as $new): ?>
           <div class="row">
             <div class="col-lg-12">
               <div class="panel panel-default">
@@ -112,32 +112,32 @@ catch(PDOException $e) {
               </div>
             </div>
           </div>
-          <?php endforeach ?>
+        <?php endforeach ?>
 
-          <div class="row">
-            <div class="col-lg-12 text-center">
-              <a href="index.php" class="btn btn-default">กลับหน้าหลัก</a>
-            </div>
+        <div class="row">
+          <div class="col-lg-12 text-center">
+            <a href="index.php" class="btn btn-default">กลับหน้าหลัก</a>
           </div>
         </div>
       </div>
-      <!-- /.container -->
+    </div>
+    <!-- /.container -->
 
-      <footer>
-        <div class="container">
-          <div class="row">
-            <div class="col-lg-12 text-center">
-              <p>Development by Thanut Pratumchat.</p>
-            </div>
+    <footer>
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12 text-center">
+            <p>Development by Thanut Pratumchat.</p>
           </div>
         </div>
-      </footer>
+      </div>
+    </footer>
 
-      <!-- jQuery -->
-      <script src="js/jquery.js"></script>
+    <!-- jQuery -->
+    <script src="js/jquery.js"></script>
 
-      <!-- Bootstrap Core JavaScript -->
-      <script src="js/bootstrap.min.js"></script>
-    </body>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
+  </body>
 
-    </html>
+  </html>

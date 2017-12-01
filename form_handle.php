@@ -13,7 +13,7 @@ if ($_SESSION['user_type'] != 9) {
   die();
 }
 try {
-  $stmt = $db->prepare("SELECT * FROM staff;");
+  $stmt = $db->prepare("SELECT * FROM staff ORDER BY RequestDate DESC;");
   $stmt->execute();
   $stmt->setFetchMode(PDO::FETCH_ASSOC);
   $requests = $stmt->fetchAll();

@@ -18,6 +18,7 @@ try {
   if (isset($_GET['building']) && $_GET['building'] != 'all') {
     $sql .= " WHERE BuildingID = {$_GET['building']}";
   }
+  $sql .= " ORDER BY Date DESC";
   $stmt = $db->prepare($sql);
   $stmt->execute();
   $repairforms = $stmt->fetchAll(PDO::FETCH_ASSOC);

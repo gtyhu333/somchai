@@ -12,7 +12,7 @@ $mainSql = "
 SELECT DISTINCT t1.StaffID, staff.PName, staff.Name, staff.Surname, staff.RequestDate, t1.Score, t1.EvaluateDate 
 FROM staff 
 LEFT JOIN (
-    SELECT score.StaffID, score.Score, score.EvaluateDate FROM score ORDER BY score.EvaluateDate DESC
+SELECT score.StaffID, score.Score, score.EvaluateDate FROM score ORDER BY score.EvaluateDate DESC
 ) as t1
 ON t1.StaffID = staff.StaffID 
 WHERE staff.request_status = 'ปกติ'
@@ -90,12 +90,12 @@ catch(PDOException $e) {
                   <a href="index.php">หน้าหลัก</a>
                 </li>
                 <li>
+                  <a href="building_normal.php">สถานะหอพักบุคลากร</a>
+                </li>
+                <li>
                  <a href="form_request.php">  <u><b>ยื่นแบบฟอร์มขอเข้าพัก</b></u></a>
                </li>
                <li>
-                <a href="building_normal.php">สถานะหอพักบุคลากร</a>
-              </li>
-              <li>
                 <a href="login.php">เข้าสู่ระบบ</a>
               </li>
             </ul>
@@ -128,42 +128,42 @@ catch(PDOException $e) {
                 </thead>
                 <tbody>
                   <?php if (!empty($requests1)): ?>
-                  <?php foreach ($requests1 as $request): ?>
-                  <tr>
-                    <td><?= "{$request['PName']} {$request['Name']} {$request['Surname']}" ?></td>
-                    <td><?= sqlDateToThaiDate($request['RequestDate']) ?></td>
-                    <td><?= $request['Score'] ?></td>
-                    <td><?= sqlDateToThaiDate($request['EvaluateDate']) ?></td>
-                  </tr>
-                  <?php endforeach ?>
+                    <?php foreach ($requests1 as $request): ?>
+                      <tr>
+                        <td><?= "{$request['PName']} {$request['Name']} {$request['Surname']}" ?></td>
+                        <td><?= sqlDateToThaiDate($request['RequestDate']) ?></td>
+                        <td><?= $request['Score'] ?></td>
+                        <td><?= sqlDateToThaiDate($request['EvaluateDate']) ?></td>
+                      </tr>
+                    <?php endforeach ?>
                   <?php else: ?>
                   <?php endif ?>
                 </tbody>
 
                 <tbody>
                   <?php if (!empty($requests2)): ?>
-                  <?php foreach ($requests1 as $request): ?>
-                  <tr>
-                    <td><?= "{$request['PName']} {$request['Name']} {$request['Surname']}" ?></td>
-                    <td><?= sqlDateToThaiDate($request['RequestDate']) ?></td>
-                    <td><?= $request['Score'] ?></td>
-                    <td><?= sqlDateToThaiDate($request['EvaluateDate']) ?></td>
-                  </tr>
-                  <?php endforeach ?>
+                    <?php foreach ($requests1 as $request): ?>
+                      <tr>
+                        <td><?= "{$request['PName']} {$request['Name']} {$request['Surname']}" ?></td>
+                        <td><?= sqlDateToThaiDate($request['RequestDate']) ?></td>
+                        <td><?= $request['Score'] ?></td>
+                        <td><?= sqlDateToThaiDate($request['EvaluateDate']) ?></td>
+                      </tr>
+                    <?php endforeach ?>
                   <?php else: ?>
                   <?php endif ?>
                 </tbody>
 
                 <tbody>
                   <?php if (!empty($requests3)): ?>
-                  <?php foreach ($requests1 as $request): ?>
-                  <tr>
-                    <td><?= "{$request['PName']} {$request['Name']} {$request['Surname']}" ?></td>
-                    <td><?= sqlDateToThaiDate($request['RequestDate']) ?></td>
-                    <td><?= $request['Score'] ?></td>
-                    <td><?= sqlDateToThaiDate($request['EvaluateDate']) ?></td>
-                  </tr>
-                  <?php endforeach ?>
+                    <?php foreach ($requests1 as $request): ?>
+                      <tr>
+                        <td><?= "{$request['PName']} {$request['Name']} {$request['Surname']}" ?></td>
+                        <td><?= sqlDateToThaiDate($request['RequestDate']) ?></td>
+                        <td><?= $request['Score'] ?></td>
+                        <td><?= sqlDateToThaiDate($request['EvaluateDate']) ?></td>
+                      </tr>
+                    <?php endforeach ?>
                   <?php else: ?>
                   <?php endif ?>
                 </tbody>

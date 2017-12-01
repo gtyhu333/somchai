@@ -82,6 +82,10 @@ $result = $stmt->fetch();
         </div>
 
         <button type="submit" class="btn btn-primary">กรอกฟอร์ม</button>
+
+        <hr>
+
+        <?php require 'get_return_checker_form_view.php' ?>
     </form>
 </div>
 
