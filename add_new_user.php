@@ -25,9 +25,9 @@ $stmt->execute();
 
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-if (!$user['UserLogin']) {
-  goto update_user;
-}
+// if (!$user['UserLogin']) {
+//   goto update_user;
+// }
 
 try {
   // Create temp table
