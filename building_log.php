@@ -22,9 +22,32 @@ if ($_SESSION['user_type'] == 9 || $_SESSION['user_type'] == 5) {
 $year = date('Y');
 $month = date('n');
 
+$buildingName = getBuidlingName($buildingID, $db);
+
 try {
-  $stmt = $db->prepare("SELECT * FROM event_logs WHERE BuildingID = ? ORDER BY DATE DESC");
-  $stmt->bindParam(1, $buildingID);
+  $stmt = $db->prepare("SELECT 
+    v_room.RoomName, 
+    v_room.RoomType, 
+    v_resident.Name, 
+    v_resident.ResidentID, 
+    v_resident.Postion, 
+    v_resident.Faculty,
+    v_resident.StartDate,
+    v_resident.Status,
+    (CASE 
+    WHEN  v_resident.Status = '1'
+    THEN
+    CONCAT(
+    YEAR(FROM_DAYS(DATEDIFF(now(), v_resident.StartDate))),'-',
+    MONTH(FROM_DAYS(DATEDIFF(now(), v_resident.StartDate))),'-',
+    DAY(FROM_DAYS(DATEDIFF(now(), v_resident.StartDate)))
+    )
+    END) As days
+    FROM v_room
+    LEFT JOIN v_resident ON v_resident.RoomID = v_room.RoomID AND v_resident.Status = '1'
+    WHERE v_room.BuildingName = ?
+    ");
+  $stmt->bindParam(1, $buildingName);
   $stmt->execute();
   $logs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -32,7 +55,7 @@ try {
     SELECT SUM(Electric) as electric, SUM(Water) as water, SUM(Room) as room, SUM(Sum) as sum 
     FROM payments 
     WHERE BuildingID = :buildingid AND Month = :month AND Year = :year
-  ");
+    ");
 
   $stmt->bindParam(':buildingid', $buildingID);
   $stmt->bindParam(':month', $month);
@@ -118,47 +141,61 @@ catch(PDOException $e) {
                             <font color ="#0080ff"><h2 class="intro-text text-center">
                               ความเคลื่อนไหวของ<?= getBuidlingName($buildingID, $db) ?>  
                             </h2>
-                            </font>
-                            <hr>
-                          </div>
+                          </font>
+                          <hr>
                         </div>
                       </div>
-                      <?php if ($_SESSION['user_type'] == 9 || $_SESSION['user_type'] == 5): ?>
-                        <div class="row" style="margin: 0">
-                          <div class="col-md-6">
-                            <label>ชื่ออาคาร</label>
-                            <select class="form-control" id="selectid" onchange="changevalue(this.value);">
-                              <?php foreach ($resultBuilding as $value): ?>
-                                <option value="<?= $value['BuildingID'] ?>" <?= $value['BuildingID'] == $buildingID ? ' selected' : '' ?>><?= $value['BuildingName'] ?></option>
-                              <?php endforeach; ?>
-                            </select>
-                          </div>
+                    </div>
+                    <?php if ($_SESSION['user_type'] == 9 || $_SESSION['user_type'] == 5): ?>
+                      <div class="row" style="margin: 0">
+                        <div class="col-md-6">
+                          <label>ชื่ออาคาร</label>
+                          <select class="form-control" id="selectid" onchange="changevalue(this.value);">
+                            <?php foreach ($resultBuilding as $value): ?>
+                              <option value="<?= $value['BuildingID'] ?>" <?= $value['BuildingID'] == $buildingID ? ' selected' : '' ?>><?= $value['BuildingName'] ?></option>
+                            <?php endforeach; ?>
+                          </select>
                         </div>
-                      <?php endif ?>
-                      <div class="panel-body">
-                        <div class="row">
-                          <div class="col-sm-12">
-                            <table class="table table-bordered" id="logs">
-                              <thead>
+                      </div>
+                    <?php endif ?>
+                    <div class="panel-body">
+                      <div class="row">
+                        <div class="col-sm-12">
+                          <table class="table table-bordered" id="logs">
+                            <thead>
+                              <tr>
+                                <th>ห้อง</th>
+                                <th>ผู้อยู่อาศัย</th>
+                                <th>ตำแหน่ง</th>
+                                <th>สังกัด</th>
+                                <th>วันที่เข้าพัก</th>
+                                <th>พักอาศัย <br> (ปี - เดือน - วัน)</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <?php foreach ($logs as $log): ?>
                                 <tr>
-                                  <th>ผู้อยู่อาศัย</th>
-                                  <th>กิจกรรม</th>
-                                  <th>วันที่</th>
+                                  <td><?= $log['RoomName'] ?></td>
+                                  <td>
+                                    <?php if ($log['Name']): ?>
+                                      <a href="#" onclick="getProfile(event, <?= $log['ResidentID'] ?>)">
+                                        <?= $log['Name'] ?>
+                                      </a>
+                                    <?php else: ?>
+                                      ว่าง
+                                    <?php endif ?>
+                                  </td>
+                                  <td><?= $log['Postion'] ?  $log['Postion'] : 'ว่าง'?></td>
+                                  <td><?= $log['Faculty'] ?  $log['Faculty'] : 'ว่าง'?></td>
+                                  <td><?= $log['StartDate'] ? sqlDateToThaiDate($log['StartDate']) : 'ว่าง' ?></td>
+                                  <td><?= $log['days'] ?  $log['days'] : 'ว่าง'?></td>
                                 </tr>
-                              </thead>
-                              <tbody>
-                                <?php foreach ($logs as $log): ?>
-                                  <tr>
-                                    <td><?= getUserFullName($log['UserID'], $db) ?></td>
-                                    <td><?= $log['Type'] ?></td>
-                                    <td><?= sqlDateToThaiDate($log['Date']) . ' ' . date('H:i:s', strtotime($log['Date'])) ?></td>
-                                  </tr>
-                                <?php endforeach ?>
-                              </tbody>
-                            </table>
-                          </div>
+                              <?php endforeach ?>
+                            </tbody>
+                          </table>
                         </div>
-
+                      </div>
+<!-- 
                         <div class="row">
                           <div class="col-lg-12">
                             <hr>
@@ -188,7 +225,7 @@ catch(PDOException $e) {
                               </tbody>
                             </table>
                           </div>
-                        </div>
+                        </div> -->
                       </div>
                     </div>
                   </div>
@@ -215,6 +252,24 @@ catch(PDOException $e) {
         <input type="hidden" name="building" value="">
       </form>
 
+      <div id="profileModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">ข้อมูลส่วนตัวของผู้พักอาศัย</h4>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">ปิด</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
       <!-- jQuery -->
       <script src="js/jquery.js"></script>
 
@@ -233,6 +288,19 @@ catch(PDOException $e) {
         function changevalue(value) {
           $('input[name=building]').val($('#selectid').val());
           $('#redirectform').submit();
+        }
+
+        function getProfile(event, id) {
+          event.preventDefault();
+
+          var url = "get_resident_profile.php?id=" + id;
+
+          $.get(url, function(response) {
+            $('#profileModal .modal-body').html();
+            $('#profileModal .modal-body').html(response);
+
+            $('#profileModal').modal('show');
+          });
         }
       </script>
 
