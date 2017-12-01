@@ -241,7 +241,7 @@ function sumBill($bill)
                 <button type="submit" class="btn btn-primary">อัพโหลด</button>
               </div>
 
-              <p><b>หมายเหตุ:</b> ให้ใช้ไฟล์ในรูปแบบี่กำหนดใน<a href="#">ไฟล์นี้</a>เท่านั้น</p>
+              <p><b>หมายเหตุ:</b> ให้ใช้ไฟล์ในรูปแบบี่กำหนดใน<a href="test-water.csv">ไฟล์นี้</a>เท่านั้น</p>
             </form>
           </div>
           <div class="modal-footer">
