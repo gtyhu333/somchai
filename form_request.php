@@ -5,7 +5,7 @@ try {
   $stmt = $db->prepare("SELECT * FROM building ");
   $stmt->execute();
   $stmt->setFetchMode(PDO::FETCH_ASSOC);
-  $result = $stmt->fetchAll();
+  $buildings = $stmt->fetchAll();
 
   $stmt = $db->prepare("SELECT * FROM position;");
   $stmt->execute();
@@ -356,12 +356,9 @@ $conn = null;
                                                   <div class="form-group"> <font color ="red"> &nbsp; <lebel>*</lebel></font>
                                                       <select  style="width:150px" class="form-control" name="building1">
                                                         <option value="">--- เลือกแฟลต --- </option>
-                                                        <option value="1">กันเกรา 1</option>
-                                                        <option value="2">กันเกรา 2</option>
-                                                        <option value="3">กันเกรา 3</option>
-                                                        <option value="4">กันเกรา 4</option>
-                                                        <option value="5">กันเกรา 5</option>
-                                                        <option value="5">กันเกรา 6</option>
+                                                        <?php foreach ($buildings as $building): ?>
+                                                        <option value="<?= $building['BuildingID'] ?>"><?= $building['BuildingName'] ?></option>
+                                                        <?php endforeach ?>
                                                       </select>
                                                   </div> &nbsp; <font color ="red"><lebel>*</lebel></font>
                                                 </div>
