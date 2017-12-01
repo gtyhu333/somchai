@@ -3,7 +3,7 @@
 require 'DBConnect.php';
 
 if (isset($_POST['repair'])) {
-    $sql = "UPDATE `repairform` SET `Status` = 2 WHERE id = ?";
+    $sql = "UPDATE `repairform` SET `Status` = {$_POST['newstatus']} WHERE id = ?";
 }
 
 if (isset($_POST['delete'])) {

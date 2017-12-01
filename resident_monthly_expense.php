@@ -118,6 +118,85 @@ function getBill($userid, $year, $month, $db)
   }
 }
 
+function getBillAlt($userid, $year, $month, $db)
+{
+  try {
+      $stmt = $db->prepare("
+        SELECT * FROM v_resident WHERE UserID = :userid AND Status = '1'"
+      );
+
+      $stmt->bindParam(':userid', $userid);
+      $stmt->execute();
+      $user = $stmt->fetch(PDO::FETCH_ASSOC);
+      
+      if (true) {
+          $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, true); // fixes 'packet ouf of order bug'
+          $stmt = $db->prepare("CALL getBill(:roomid, :year, :month)");
+          $stmt->bindParam(':roomid', $user['RoomID']);
+          $stmt->bindParam(':year', $year);
+          $stmt->bindParam(':month', $month);
+          $stmt->execute();
+          $bills = $stmt->fetch(PDO::FETCH_ASSOC);
+          $stmt->closeCursor();
+
+          if (empty($bills)) {
+            return null;
+          }
+
+          array_walk($bills, function (&$value, $key) {
+              return [$key => number_format($value)];
+          });
+
+          return $bills;
+      } else {
+        return null;
+      }
+
+  } catch (Exception $e) {
+      echo "Error {$e->getMessage()}";
+      echo "{$e->getTraceAsString()}";
+      die();
+  }
+}
+
+
+function getPayment($userid, $year, $month, $db)
+{
+  try {
+      $stmt = $db->prepare("
+        SELECT * FROM v_resident WHERE UserID = :userid AND Status = '1'"
+      );
+
+      $stmt->bindParam(':userid', $userid);
+      $stmt->execute();
+      $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+      $stmt = $db->prepare("
+          SELECT * FROM payments WHERE ResidentID = :residentid AND Month = :month 
+          AND Year = :year
+      ");
+      $thisMonth = $month;
+      $thisYear = $year;
+      $stmt->bindParam(':residentid', $user['ResidentID']);
+      $stmt->bindParam(':month', $thisMonth);
+      $stmt->bindParam(':year', $thisYear);
+      $stmt->execute();
+      $payments = $stmt->fetchAll(PDO::FETCH_ASSOC);
+      $stmt->closeCursor();
+      
+      if (!empty($payments)) {
+          return $payments[0];
+      } else {
+        return null;
+      }
+
+  } catch (Exception $e) {
+      echo "Error {$e->getMessage()}";
+      echo "{$e->getTraceAsString()}";
+      die();
+  }
+}
+
 ?>
 }
 <html lang="en">
@@ -233,17 +312,28 @@ function getBill($userid, $year, $month, $db)
                   <tbody>
                     <?php foreach ($residents as $resident): ?>
                     <?php 
+                    $paid = false;
                       $bills = getBill(
                         $resident['UserID'], $selectedYear, $selectedMonth, $db
                       );
+
+                      if (!$bills) {
+                        $bills = getBillAlt(
+                          $resident['UserID'], $selectedYear, $selectedMonth, $db
+                        );
+                        
+                        if (getPayment($resident['UserID'], $selectedYear, $selectedMonth, $db)) {
+                          $paid = true;
+                        }
+                      }
                     ?>
                     <tr>
                       <td><?= roomNumber($resident['RoomID'], $db) ?></td>
                       <td><?= $resident['Name'] ?></td>
-                      <td><?= $bills ? $bills['water_total'] : '-' ?></td>
-                      <td><?= $bills ? $bills['electric_total'] : '-' ?></td>
-                      <td><?= $bills ? $bills['room_price'] : '-' ?></td>
-                      <td><?= $bills ? $bills['total'] : '-' ?></td>
+                      <td><?= $bills ? $bills['water_total'] : '-' ?> <?= $paid ? '(จ่ายแล้ว)' : '' ?></td>
+                      <td><?= $bills ? $bills['electric_total'] : '-' ?> <?= $paid ? '(จ่ายแล้ว)' : '' ?></td>
+                      <td><?= $bills ? $bills['room_price'] : '-' ?> <?= $paid ? '(จ่ายแล้ว)' : '' ?></td>
+                      <td><?= $bills ? $bills['total'] : '-' ?> <?= $paid ? '(จ่ายแล้ว)' : '' ?></td>
                       <td>
                         <form action="add_payment.php" method="POST">
                           <input type="hidden" name="residentid" value="<?= $resident['ResidentID'] ?>">
@@ -254,9 +344,17 @@ function getBill($userid, $year, $month, $db)
                           <input type="hidden" name="room" value="<?= $bills['room_price'] ?>">
                           <input type="hidden" name="sum" value="<?= $bills['total'] ?>">
                           <input type="hidden" name="buildingid" value="<?= $buildingid ?>">
-                          <button type="submit" class="btn btn-primary"
-                          <?= $bills ? '' : ' disabled' ?>>จ่ายแล้ว</button>
+                          <?php if (!$bill && !getPayment($resident['UserID'], $selectedYear, $selectedMonth, $db)): ?>
+                            <button type="submit" class="btn btn-primary" <?= !$bill ? ' disabled' : '' ?>>จ่ายแล้ว</button>
+                          <?php endif ?>
                         </form>
+                        
+                        <?php if ($bills && ($payment = getPayment($resident['UserID'], $selectedYear, $selectedMonth, $db))): ?>
+                        <form action="delete_payment.php" method="POST" onsubmit="return confirm('ต้องการเปลี่ยนสถานะเป็นยังไม่จ่ายหรือไม่')">
+                          <input type="hidden" name="id" value="<?= $payment['PaymentID'] ?>">
+                          <button type="submit" class="btn btn-warning">ยังไม่จ่าย</button>
+                        </form>
+                        <?php endif ?>
                       </td>
                     </tr>
                     <?php endforeach ?>
