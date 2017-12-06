@@ -344,8 +344,8 @@ function getPayment($userid, $year, $month, $db)
                           <input type="hidden" name="room" value="<?= $bills['room_price'] ?>">
                           <input type="hidden" name="sum" value="<?= $bills['total'] ?>">
                           <input type="hidden" name="buildingid" value="<?= $buildingid ?>">
-                          <?php if (!$bill && !getPayment($resident['UserID'], $selectedYear, $selectedMonth, $db)): ?>
-                            <button type="submit" class="btn btn-primary" <?= !$bill ? ' disabled' : '' ?>>จ่ายแล้ว</button>
+                          <?php if (!getPayment($resident['UserID'], $selectedYear, $selectedMonth, $db)): ?>
+                            <button type="submit" class="btn btn-primary" <?= !$bills ? ' disabled' : '' ?>>จ่ายแล้ว</button>
                           <?php endif ?>
                         </form>
                         
