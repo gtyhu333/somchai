@@ -70,34 +70,34 @@ $db->commit();
 goto redirect;
 
 update_user:
-$hasPass = $_POST['password'] != '';
+// $hasPass = $_POST['password'] != '';
 
-try {
-    $sql = "UPDATE `member` SET `UserLogin` = :userlogin, `UserType` = :usertype";
+// try {
+//     $sql = "UPDATE `member` SET `UserLogin` = :userlogin, `UserType` = :usertype";
 
-    if ($hasPass) {
-        $sql .= ", `Passwd` = :passwd";
-    }
+//     if ($hasPass) {
+//         $sql .= ", `Passwd` = :passwd";
+//     }
 
-    $sql .= " WHERE `UserID` = :userid;";
+//     $sql .= " WHERE `UserID` = :userid;";
 
-    $stmt = $db->prepare($sql);
+//     $stmt = $db->prepare($sql);
 
-    $stmt->bindParam(':userid', $_POST['userid']);
-    $stmt->bindParam(':userlogin', $_POST['username']);
-    if ($hasPass) {
-        $stmt->bindParam(':passwd', password_hash($_POST['password'], PASSWORD_DEFAULT));
-    }
-    $stmt->bindParam(':usertype', $_POST['usertype']);
+//     $stmt->bindParam(':userid', $_POST['userid']);
+//     $stmt->bindParam(':userlogin', $_POST['username']);
+//     if ($hasPass) {
+//         $stmt->bindParam(':passwd', password_hash($_POST['password'], PASSWORD_DEFAULT));
+//     }
+//     $stmt->bindParam(':usertype', $_POST['usertype']);
 
-    $stmt->execute();
-} catch (PDOException $e) {
-  echo "Error: " . $e->getMessage();
-  $db->rollback();
-  die();
-}
+//     $stmt->execute();
+// } catch (PDOException $e) {
+//   echo "Error: " . $e->getMessage();
+//   $db->rollback();
+//   die();
+// }
 
-$db->commit();
+// $db->commit();
 
 // redirect back
 redirect:

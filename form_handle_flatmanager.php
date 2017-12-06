@@ -27,9 +27,9 @@ try {
   INNER JOIN `v_resident` ON `return_form`.`ResidentID` = `v_resident`.`ResidentID` 
   INNER JOIN `return_form_checker` ON `return_form`.`ReturnID` = `return_form_checker`.`return_form_id` 
   INNER JOIN `return_form_manager` ON `return_form`.`ReturnID` = `return_form_manager`.`return_form_id`
-  ORDER BY `return_form`.`CreateDate` DESC
+  
 ";
-  $sql .= " WHERE BuildingID = {$userInfo['BuildingID']}";
+  $sql .= " WHERE BuildingID = {$userInfo['BuildingID']} ORDER BY `return_form`.`CreateDate` DESC";
 
   $stmt = $db->prepare($sql);
   $stmt->execute();
