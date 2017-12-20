@@ -36,7 +36,7 @@ try {
     $stmt->execute();
     list($residentID, $userID, $returnDate) = $stmt->fetch(PDO::FETCH_NUM);
 
-    $sql = "UPDATE resident SET EndDate = :enddate WHERE ResidentID = :residentid";
+    $sql = "UPDATE resident SET EndDate = :enddate, ActiveStatus = 0 WHERE ResidentID = :residentid";
     $stmt = $db->prepare($sql);
     $stmt->bindParam(':residentid', $residentID);
     $stmt->bindParam(':enddate', $returnDate);

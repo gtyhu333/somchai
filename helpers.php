@@ -180,7 +180,7 @@ function getRoomTypeName($id, $db)
 function getAvailableRoomForRequest($request, $db)
 {
     $stmt = $db->prepare("
-        SELECT * FROM room WHERE NOT EXISTS (SELECT RoomID FROM resident WHERE `resident`.`RoomID` = `room`.`RoomID`)
+        SELECT * FROM room WHERE NOT EXISTS (SELECT RoomID FROM resident WHERE `resident`.`RoomID` = `room`.`RoomID` AND `Resident`.`ActiveStatus` = 1)
         AND RoomType = ?;
     ");
 
