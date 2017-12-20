@@ -150,7 +150,7 @@ catch(PDOException $e) {
                                                   
                                                 <div class="col-md-6">
                                                   <form action="building_update_form.php" method="GET" style="display: inline-block;">
-                                                    <input type="hidden" name="id" value="1">
+                                                    <input type="hidden" name="id" value="<?= $buildingID ?>">
                                                     <button class="btn btn-primary" type="submit">แก้ไขอาคาร</button>
                                                   </form>
 
