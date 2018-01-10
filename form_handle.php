@@ -55,6 +55,12 @@ catch(PDOException $e) {
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 
+    <style>
+      .form-control-static {
+        font-size: 1em;
+      }
+    </style>
+
 </head>
 
 <body>
@@ -127,6 +133,9 @@ catch(PDOException $e) {
                                                             </center>
                                                           </td>
                                                           <td><center>
+                                                            <button class="btn btn-default" onclick="showFormModal(event, <?= $request['StaffID'] ?>)">
+                                                              ดูฟอร์ม
+                                                            </button>
                                                               <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#modal<?= $request['StaffID'] ?>">
                                                                 แก้ไข
                                                               </a>
@@ -262,18 +271,33 @@ catch(PDOException $e) {
       </div><!-- /.modal-dialog -->
     </div>
 
+    <div class="modal fade" tabindex="-1" role="dialog" id="formmodal">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">รายละเอียดฟอร์ม</h4>
+          </div>
+          <div class="modal-body">
+            <div id="formmodal-content">
+              
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">ปิด</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div>
+
     <!-- jQuery -->
     <script src="js/jquery.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
 
-    <script src="js/jquery.dataTables.min.js"></script>
-    <script src="js/dataTables.bootstrap.min.js"></script>
-
     <script type="text/javascript">
     $(document).ready(function() {
-        $('#room').DataTable();
         $('input[name=id]').val($('#selectid').val());
     } );
 
@@ -292,6 +316,19 @@ catch(PDOException $e) {
         $('#scoremodal-content').html(res);
 
         $('#scoremodal').modal('show');
+      });
+    }
+
+    function showFormModal(event, id) {
+      event.preventDefault();
+
+      var url = "get_request_form_view.php?id=" + id;
+
+      $.get(url, function(res) {
+        $('#formmodal-content').html('');
+        $('#formmodal-content').html(res);
+
+        $('#formmodal').modal('show');
       });
     }
     </script>

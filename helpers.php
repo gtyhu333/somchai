@@ -119,6 +119,42 @@ function memberType($userID, $db)
     return [$resultMember['UserType'] , $result['ValueT']];
 }
 
+function personalType($typeID, $db)
+{
+    $resultMember = getUserInfo($userID, $db);
+
+    $stmt = $db->prepare("SELECT ValueT FROM allvars WHERE FieldName = 'PersonnelType'
+    AND FieldCode = ? LIMIT 1;");
+    $stmt->bindParam(1, $typeID, PDO::PARAM_INT);
+    $stmt->execute();
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    return $result['ValueT'];
+}
+
+function maritalStatus($id)
+{
+    switch ($id) {
+        case 1:
+            return 'โสด';
+        case 2:
+            return 'สมรส';
+        case 3:
+            return 'หย่า';
+        case 4:
+            return 'สมรสกับเจ้าหน้าที่ในมหาลัย';
+    }
+}
+
+function deptName($facID, $deptID, $db)
+{
+    $stmt = $db->prepare("SELECT * FROM department WHERE FacID = ? AND DeptID = ?;");
+    $stmt->bindParam(1, $facID, PDO::PARAM_INT);
+    $stmt->bindParam(2, $deptID, PDO::PARAM_INT);
+    $stmt->execute();
+    return ($stmt->fetch(PDO::FETCH_ASSOC))['DeptNameT'];
+}
+
 function getDepartments($facID, $db)
 {
     $stmt = $db->prepare("SELECT * FROM department WHERE FacID = ?;");
