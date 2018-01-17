@@ -27,11 +27,15 @@ $roomid = isset($_POST['roomid']) ? $_POST['roomid'] : $user['RoomID'];
 
 $items = isset($_POST['item']) ? $_POST['item'] : [];
 
+$isRepairRoom = empty($items) && isset($_POST['room']);
+
 if ($_POST['otheritem'] != "") {
     $items[] = trim($_POST['otheritem']);
 }
 
-$items = implode(',', $items);
+if (!empty($items)) {
+  $items = implode(',', $items);
+}
 
 // insert to repairform
 $db->beginTransaction();
@@ -43,7 +47,12 @@ try {
     $stmt->bindParam(':buildingid', $buildingid);
     $stmt->bindParam(':roomid', $roomid);
     $stmt->bindParam(':userid', $_SESSION['user_id']);
-    $stmt->bindParam(':items', $items);
+    if (is_string($items)) {
+      $stmt->bindParam(':items', $items);
+    } else {
+      $item = 'room';
+      $stmt->bindParam(':items', $item);
+    }
 
     $stmt->execute();
 
@@ -85,6 +94,19 @@ foreach ($filespath as $path) {
 }
 
 redirect:
+// Change room status
+if ($item == 'room') {
+  try {
+    $sql = "UPDATE `room` SET `RoomStatus` = 2 WHERE `RoomID` = ?";
+    $stmt = $db->prepare($sql);
+    $stmt->bindParam(1, $roomid);
+    $stmt->execute();  
+  } catch (Exception $e) {
+    echo "Error: " . $e->getMessage();
+    $db->rollback();
+    die();
+  }
+}
 // INSERT TO LOGS TABLE
 try {
   $sql = "INSERT INTO event_logs (BuildingID, Type, EventID, UserID, Date) VALUES (:buildingid, :type, :eventid, :userid, :date)";

@@ -20,9 +20,9 @@ $db->beginTransaction();
 foreach ($csv as $data) {
     try {
         $sql = "INSERT INTO electric_bills (BuildingID, RoomID, MeterSerial, LastMonthCount, 
-        ThisMonthCount, BasePrice, FT, ServiceCharge, Vat, RecordDate) 
+        ThisMonthCount, BasePrice, FT, ServiceCharge, Vat, RecordDate, Month, Year) 
         VALUES (:buildingid, :roomid, :meterserial, :lastmonthcount, :thismonthcount, :baseprice, :ft, 
-        :servicecharge, :vat, :recorddate);";
+        :servicecharge, :vat, :recorddate, :month, :year);";
 
         $date = thaiDateToSqlFormat($data['recorddate']);
         $buildingID = $_POST['buildingid'];
@@ -39,7 +39,8 @@ foreach ($csv as $data) {
         $stmt->bindParam(':servicecharge', $data['service']);
         $stmt->bindParam(':vat', $data['vat']);
         $stmt->bindParam(':recorddate', $date);
-
+        $stmt->bindParam(':month', $_POST['month']);
+        $stmt->bindParam(':year', $_POST['year']);
         $stmt->execute();
 
     } catch (Exception $e) {

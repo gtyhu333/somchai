@@ -238,6 +238,32 @@ function sumBill($bill)
               </div>
 
               <div class="form-group">
+                <label>สำหรับเดือน</label>
+                <select class="form-control" name="month">
+                <?php foreach ($months as $index => $month): ?>
+                  <option value="<?= $index + 1 ?>"<?= isset($_GET['month']) && $_GET['month'] == $index + 1 ? ' selected' : '' ?>>
+                    <?= $month ?>
+                  </option>
+                <?php endforeach ?>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label>พ.ศ.</label>
+                <select class="form-control" name="year">
+                <?php 
+                $start = (int) date('Y') - 3;
+                $end = (int) date('Y');
+                ?>
+                <?php foreach (range($start, $end) as $year): ?>
+                  <option value="<?= $year ?>"<?= isset($_GET['year']) && $_GET['year'] == $year ? ' selected' : '' ?>>
+                    <?= $year + 543 ?>
+                  </option>
+                <?php endforeach ?>
+                </select>
+              </div>
+
+              <div class="form-group">
                 <button type="submit" class="btn btn-primary">อัพโหลด</button>
               </div>
 
