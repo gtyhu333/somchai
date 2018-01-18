@@ -246,6 +246,7 @@ catch(PDOException $e) {
                                                           <td><center><?= number_format($value['InsurantRate']) ?></center></td>
                                                           <?php if ($_SESSION['user_type'] == 9): ?>      
                                                           <td><center>
+                                                              <button type="button" class="btn btn-default" onclick="openHistoryModal(<?= $value['RoomID'] ?>)">ประวัติ</button>
                                                               <a href="room_update_form.php?id=<?= $value['RoomID'] ?>" class="btn btn-primary" name="a">แก้ไข</a>
                                                           </center></td>
                                                         <td>  <center>
@@ -273,6 +274,25 @@ catch(PDOException $e) {
     </div>
     <!-- /.container -->
 
+    <div class="modal fade" tabindex="-1" role="dialog" id="historymodal">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">ประวัติการเข้าพักอาศัยของห้อง</h4>
+          </div>
+          <div class="modal-body">
+            <div class="historymodal-content">
+      
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">ปิด</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div>
+
     <footer>
         <div class="container">
             <div class="row">
@@ -293,18 +313,23 @@ catch(PDOException $e) {
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
 
-    <script src="js/jquery.dataTables.min.js"></script>
-    <script src="js/dataTables.bootstrap.min.js"></script>
-
     <script type="text/javascript">
     $(document).ready(function() {
-        $('#room').DataTable();
         $('input[name=id]').val($('#selectid').val());
     } );
 
     function changevalue(value) {
       $('input[name=building]').val($('#selectid').val());
       $('#redirectform').submit();
+    }
+
+    function openHistoryModal(id) {
+      $.get('get_room_history.php?id=' + id, function(res) {
+        $('.historymodal-content').html('');
+        $('.historymodal-content').html(res);
+
+        $('#historymodal').modal('show');
+      });
     }
     </script>
 

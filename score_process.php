@@ -70,6 +70,8 @@ $sql = "SELECT * FROM `staff`
 WHERE `staff`.`RequestDate` BETWEEN '{$range[$selector][0]}' AND '{$range[$selector][1]}' 
 AND `staff`.`request_status` = 'ปกติ' ;";
 
+// dd($sql);
+
 $stmt = $db->prepare($sql);
 $stmt->execute();
 $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
