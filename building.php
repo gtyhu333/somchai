@@ -206,6 +206,7 @@ catch(PDOException $e) {
                                                       <th><center>สถานะห้องพัก</center></th>
                                                       <th><center>ค่าเช่าห้องพัก</center></th>
                                                       <th><center>ค่าประกันของเสียหาย</center></th>
+                                                      <th><center>ประวัติการเข้าพัก</center></th>
                                                       <?php if ($_SESSION['user_type'] == 9): ?>      
                                                       <th><center>แก้ไขข้อมูล</center></th>
                                                       <th><center>ลบข้อมูล</center></th>
@@ -244,9 +245,9 @@ catch(PDOException $e) {
                                                           <td class="<?= getBuildingTableClass($value['RoomStatus']) ?>"><center><?= $value['RoomStatus'] ?></center></td>
                                                           <td><center><?= number_format($value['RoomRate']) ?></center></td>
                                                           <td><center><?= number_format($value['InsurantRate']) ?></center></td>
+                                                          <td><center><button type="button" class="btn btn-default" onclick="openHistoryModal(<?= $value['RoomID'] ?>)">ประวัติ</button></center></td>
                                                           <?php if ($_SESSION['user_type'] == 9): ?>      
                                                           <td><center>
-                                                              <button type="button" class="btn btn-default" onclick="openHistoryModal(<?= $value['RoomID'] ?>)">ประวัติ</button>
                                                               <a href="room_update_form.php?id=<?= $value['RoomID'] ?>" class="btn btn-primary" name="a">แก้ไข</a>
                                                           </center></td>
                                                         <td>  <center>

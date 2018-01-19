@@ -80,6 +80,12 @@ if (empty($result)) {
     goto previousCycle;
 }
 
+foreach ($result as $staff) {
+    $sql = "DELETE FROM score WHERE StaffID = " . $staff['StaffID'];
+    $stmt = $db->prepare($sql);
+    $stmt->execute();
+}
+
 $insertSQL = "
     INSERT INTO `score` (`StaffID`, `PositionScore`, 
     `CityScore`, `DisasterScore`, `MaritalScore`, `EmployScore`,`Score`) VALUES ";
@@ -122,6 +128,12 @@ $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 if (empty($result)) {
     goto redirect;
+}
+
+foreach ($result as $staff) {
+    $sql = "DELETE FROM score WHERE StaffID = " . $staff['StaffID'];
+    $stmt = $db->prepare($sql);
+    $stmt->execute();
 }
 
 $insertSQL = "
